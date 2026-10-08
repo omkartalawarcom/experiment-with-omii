@@ -31,7 +31,25 @@ header h1{
     font-size:38px;
     margin-bottom:10px;
 }
+.header-title{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+}
 
+.site-logo{
+    width:58px;
+    height:58px;
+    object-fit:cover;
+    border-radius:50%;
+    flex-shrink:0;
+}
+
+.header-title h1{
+    margin:0;
+}
+    
 header p{
     color:#cbd5e1;
     font-size:17px;
@@ -256,10 +274,12 @@ footer{
 </head>
 
 <body>
-
+    
 <header>
-    <img src="omii-logo.png" alt="Physics With Omii Logo" class="site-logo">
-    <h1>⚡ Physics With Omii</h1>
+    <div class="header-title">
+        <img src="omii-logo.png" alt="Physics With Omii Logo" class="site-logo">
+        <h1>⚡ Physics With Omii</h1>
+    </div>
     <p>Learn Physics Through Interactive Experiments</p>
 </header>
 <section class="card">
