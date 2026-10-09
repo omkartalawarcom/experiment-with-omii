@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Physics With Omii</title>
+<link rel="icon" type="image/png" href="omii-logo.png">
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#080b16;
+    color:white;
+    min-height:100vh;
+}
+
+/* HEADER */
+header{
+    text-align:center;
+    padding:45px 20px;
+    background:linear-gradient(135deg,#111827,#1e3a8a);
+}
+
+header h1{
+    font-size:38px;
+    margin-bottom:10px;
+}
+.header-title{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+}
+
+.site-logo{
+    width:48px;
+    height:48px;
+    max-width:48px;
+    max-height:48px;
+    object-fit:contain;
+    border-radius:50%;
+    flex:0 0 48px;
+    display:block;
+}
+
+.header-title h1{
+    margin:0;
+}
+    
+header p{
+    color:#cbd5e1;
+    font-size:17px;
+}
+
+/* MAIN */
+main{
+    width:92%;
+    max-width:1000px;
+    margin:30px auto;
+}
+
+/* CARD */
+.card{
+    background:#111827;
+    border:1px solid #263449;
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.card h2{
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#cbd5e1;
+    line-height:1.6;
+}
+
+/* EXPERIMENT */
+.experiment{
+    margin-top:20px;
+    background:#050816;
+    border-radius:15px;
+    padding:20px;
+    border:1px solid #334155;
+}
+
+/* CIRCUIT */
+.circuit{
+    position:relative;
+    height:220px;
+    background:#020617;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid #334155;
+}
+
+.wire{
+    position:absolute;
+    height:5px;
+    background:#475569;
+}
+
+.w1{
+    width:35%;
+    left:10%;
+    top:50%;
+}
+
+.w2{
+    width:35%;
+    right:10%;
+    top:50%;
+}
+
+.battery{
+    position:absolute;
+    left:45%;
+    top:40%;
+    width:70px;
+    height:45px;
+    background:#dc2626;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.resistor{
+    position:absolute;
+    left:20%;
+    top:42%;
+    width:70px;
+    height:35px;
+    background:#f59e0b;
+    color:#111;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* ELECTRON */
+.electron{
+    position:absolute;
+    width:13px;
+    height:13px;
+    background:#38bdf8;
+    border-radius:50%;
+    box-shadow:0 0 15px #38bdf8;
+    top:48%;
+    left:12%;
+    display:none;
+}
+
+/* CONTROLS */
+.controls{
+    margin-top:20px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+button{
+    border:none;
+    padding:13px 20px;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+button.stop{
+    background:#dc2626;
+}
+
+button.reset{
+    background:#475569;
+}
+
+/* VALUES */
+.values{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.value{
+    background:#0f172a;
+    padding:18px;
+    border-radius:12px;
+    text-align:center;
+    border:1px solid #334155;
+}
+
+.value span{
+    display:block;
+    font-size:25px;
+    margin-top:8px;
+    color:#38bdf8;
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:30px;
+    margin-top:30px;
+    background:#020617;
+    color:#94a3b8;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+    header h1{
+        font-size:30px;
+    }
+
+    .values{
+        grid-template-columns:1fr;
+    }
+
+    .circuit{
+        height:190px;
+    }
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px;}
+.dashboard-card{background:#0f172a;border:1px solid #334155;border-radius:16px;padding:20px;text-align:center;transition:.25s;}
+.dashboard-card:hover{transform:translateY(-4px);border-color:#38bdf8;box-shadow:0 8px 24px rgba(56,189,248,.12);}
+.dashboard-card h3{margin-bottom:8px;}
+.dashboard-card p{color:#cbd5e1;margin-bottom:16px;}
+.dashboard-card button{width:100%;}
+@media(max-width:600px){.dashboard-grid{grid-template-columns:1fr;}}
+/* ================= END DASHBOARD ================= */
+
+
+/* ================== PHYSICS WITH OMII - ADVANCED SITE UI ================== */
+.site-nav{position:sticky;top:0;z-index:999;background:rgba(2,6,23,.94);backdrop-filter:blur(10px);border-bottom:1px solid #334155;padding:10px 14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.site-nav button{padding:9px 14px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#fff;cursor:pointer}
+.site-nav button:hover{transform:translateY(-1px);border-color:#60a5fa}
+.hero-section{margin:20px auto;max-width:1100px;padding:42px 24px;text-align:center;border:1px solid #334155;border-radius:22px;background:linear-gradient(135deg,#0f172a,#111827)}
+.hero-section h1{font-size:clamp(32px,7vw,60px);margin:0 0 12px}
+.hero-section p{max-width:760px;margin:0 auto 20px;color:#cbd5e1;line-height:1.7}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-actions button,.quiz-btn{border:0;border-radius:12px;padding:12px 18px;background:#2563eb;color:white;font-weight:bold;cursor:pointer}
+.feature-grid,.learn-grid,.quiz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+.feature-card,.learn-card,.quiz-card{padding:18px;border-radius:16px;background:#0f172a;border:1px solid #334155}
+.feature-card h3,.learn-card h3{margin-top:0}
+.learn-card p{line-height:1.6;color:#cbd5e1}
+.search-wrap{display:flex;gap:8px;max-width:700px;margin:15px auto}
+.search-wrap input{flex:1;padding:13px;border-radius:11px;border:1px solid #475569;background:#020617;color:#fff}
+.quiz-option{display:block;width:100%;text-align:left;margin:8px 0;padding:11px;border-radius:10px;border:1px solid #475569;background:#111827;color:#fff;cursor:pointer}
+.quiz-option:hover{border-color:#60a5fa}
+.quiz-result{margin-top:12px;padding:12px;border-radius:10px;background:#020617}
+.backtop{position:fixed;right:16px;bottom:16px;z-index:1000;border:0;border-radius:50%;width:45px;height:45px;background:#2563eb;color:#fff;cursor:pointer}
+@media(max-width:600px){.hero-section{padding:30px 16px}.site-nav button{flex:1;min-width:80px}.search-wrap{flex-direction:column}}
+.site-footer{
+    margin-top:40px;
+    padding:30px 20px;
+    text-align:center;
+    background:linear-gradient(135deg,#111936,#172554);
+    color:white;
+    border-top:2px solid #38bdf8;
+}
+
+.site-footer h3{
+    margin-bottom:10px;
+    font-size:24px;
+}
+
+.site-footer p{
+    margin:7px 0;
+    opacity:0.85;
+}
+    #contactSite{
+    text-align:center;
+}
+
+#contactSite h2{
+    margin-bottom:15px;
+}
+
+#contactSite p{
+    line-height:1.7;
+} 
+@media (max-width: 600px){
+    .site-logo{width:38px;height:38px;max-width:38px;max-height:38px;flex-basis:38px;}
+    .header-title{gap:8px;}
+    .header-title h1{font-size:clamp(22px,6vw,30px);}
+}
+</style>
+</head>
+
+<body>
+    
+<header>
+    <div class="header-title">
+        <img src="omii-logo.png" class="site-logo" alt="Physics With Omii logo">
+        <h1>⚡ Physics With Omii</h1>
+    </div>
+    <p>Learn Physics Through Interactive Experiments</p>
+</header>
+
+
+<nav class="site-nav" aria-label="Main navigation">
+  <button onclick="scrollToSection('homeHero')">🏠 Home</button>
+  <button onclick="scrollToSection('experimentsDashboard')">🧪 Experiments</button>
+  <button onclick="scrollToSection('learnPhysics')">📖 Learn</button>
+  <button onclick="scrollToSection('quizZone')">🧠 Quiz</button>
+  <button onclick="scrollToSection('aboutSite')">ℹ️ About</button>
+</nav>
+
+<section class="hero-section" id="homeHero">
+  <div style="font-size:42px;">⚡🌍🚀🔬</div>
+  <h1>Physics With Omii</h1>
+  <p>Learn physics by seeing it happen. Explore interactive simulations, change variables, observe motion and connect formulas with real-world ideas.</p>
+  <div class="hero-actions">
+    <button onclick="scrollToSection('experimentsDashboard')">🚀 Start Exploring</button>
+    <button onclick="scrollToSection('learnPhysics')">📖 Learn Physics</button>
+    <button onclick="scrollToSection('quizZone')">🧠 Take a Quiz</button>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card"><h3>🎮 Interactive</h3><p>Change values and see the experiment respond.</p></div>
+    <div class="feature-card"><h3>📐 Formula Based</h3><p>Connect observations with important physics equations.</p></div>
+    <div class="feature-card"><h3>📱 Mobile Friendly</h3><p>Designed to be usable on phones and larger screens.</p></div>
+  </div>
+</section>
+
+<main>
+
+
+
+<section class="card" id="aboutSite">
+
+    <h2>📚 About This Website</h2>
+
+    <p>
+        Physics With Omii is an educational website designed to make
+        physics easier to understand using interactive experiments,
+        animations and simple explanations.
+    </p>
+
+</section>
+
+
+<section class="card" id="learnPhysics">
+  <h2>📖 Learn Physics</h2>
+  <p>Choose a topic below to see its key idea, formula and what to observe in the simulation.</p>
+  <div class="search-wrap">
+    <input id="topicSearch" type="search" placeholder="Search: Ohm, Series, Induction, Planetary, Gravity, Lens, Projectile" oninput="filterLearnTopics()">
+  </div>
+  <div class="learn-grid" id="learnGrid">
+    <div class="learn-card" data-topic="ohm law electricity"><h3>⚡ Ohm's Law</h3><p>Relationship between voltage, current and resistance.</p><b>V = I × R</b><p>Observe how changing V or R changes current and power.</p></div>
+    <div class="learn-card" data-topic="planetary motion gravity orbit planets kepler newton orbital speed period escape velocity"> <h3>🪐 Planetary Motion & Gravity</h3><p>Explore how gravity governs planetary orbits and how orbital speed and period depend on distance and central mass.</p><b>F = GMm/r² &nbsp; | &nbsp; v = √(GM/r)</b><p>Compare planets, change central mass and inspect orbital measurements. The simulator uses an educational circular-orbit model.</p></div>
+    <div class="learn-card" data-topic="gravity free fall"><h3>🌍 Gravity</h3><p>Objects accelerate downward because of gravitational acceleration.</p><b>v = gt &nbsp; | &nbsp; s = ½gt²</b><p>Compare objects and environments in the simulation.</p></div>
+    <div class="learn-card" data-topic="convex lens optics"><h3>🔍 Convex Lens</h3><p>A converging lens forms images depending on focal length and object position.</p><b>1/f = 1/v − 1/u</b><p>Explore image distance, magnification and orientation.</p></div>
+    <div class="learn-card" data-topic="projectile motion trajectory"><h3>🚀 Projectile Motion</h3><p>Horizontal and vertical motions combine to form a trajectory.</p><b>x = u cosθ · t</b><p>Change speed, angle and gravity and compare range, height and time.</p></div>
+    <div class="learn-card" data-topic="electromagnetic induction faraday lenz magnetic flux emf coil magnet"><h3>🧲 Electromagnetic Induction</h3><p>A changing magnetic flux through a coil induces an EMF.</p><b>ε = −N · dΦ/dt</b><p>More turns or faster flux change generally increases induced EMF. Lenz’s law gives its direction.</p></div>
+    <div class="learn-card" data-topic="series parallel circuit resistors current voltage equivalent resistance kirchhoff power"><h3>🔌 Series–Parallel Circuits</h3><p>Compare current, voltage drops, branch currents, equivalent resistance and power.</p><b>Series: Rₜ = ΣR &nbsp; | &nbsp; Parallel: 1/Rₜ = Σ(1/R)</b><p>Use the interactive lab to switch topologies and open/close branches.</p></div>
+  </div>
+</section>
+
+<section class="card" id="quizZone">
+  <h2>🧠 Physics Quick Quiz</h2>
+  <p>Test your understanding of the experiments, including circuits, planetary motion, gravity and electromagnetic induction.</p>
+  <div class="quiz-grid">
+    <div class="quiz-card"><h3>1. Ohm's Law</h3><p>Which equation represents Ohm's Law?</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">P = VI</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">V = IR</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">F = ma</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>2. Projectile Motion</h3><p>At the highest point, vertical velocity is:</p>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">Zero</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Maximum</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Equal to gravity</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>4. Lens</h3><p>A convex lens is generally a:</p>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">Converging lens</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Diverging lens</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Flat mirror</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>5. Gravity</h3><p>Near Earth's surface, gravitational acceleration is approximately:</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">1.0 m/s²</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">9.8 m/s²</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">98 m/s²</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>6. Electromagnetic Induction</h3><p>What causes an EMF to be induced in a coil?</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">A stationary magnet with constant flux</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">A change in magnetic flux through the coil</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Increasing the coil's colour</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>7. Faraday’s Law</h3><p>For the same flux-change rate, what happens when coil turns increase?</p>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">The magnitude of induced EMF increases</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Induced EMF is always zero</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">The magnet loses its mass</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>8. Lenz’s Law</h3><p>The induced current acts to:</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Always increase the flux change</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">Oppose the change in magnetic flux that caused it</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Stop all magnetic fields permanently</button>
+      <div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>9. Series Circuit</h3><p>In an ideal series circuit, which quantity is the same through every component?</p>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">Current</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Voltage drop</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Resistance</button><div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>10. Parallel Circuit</h3><p>In a parallel circuit, each connected branch has the same:</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Current in every branch</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">Voltage across it</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Resistance</button><div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>11. Equivalent Resistance</h3><p>Adding another resistor branch in parallel (with the source unchanged) usually makes total resistance:</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Increase</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">Decrease</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">Always stay the same</button><div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>12. Circuit Power</h3><p>Which formula gives the power dissipated by a resistor?</p>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">P = I/R</button>
+      <button class="quiz-option" onclick="quizAnswer(this,false)">P = R/V</button>
+      <button class="quiz-option" onclick="quizAnswer(this,true)">P = I²R</button><div class="quiz-result"></div>
+    </div>
+    <div class="quiz-card"><h3>13. Planetary Motion</h3><p>What provides the centripetal force that keeps a planet in orbit around the Sun?</p><button class="quiz-option" onclick="quizAnswer(this,false)">Air resistance</button><button class="quiz-option" onclick="quizAnswer(this,true)">Gravitational attraction</button><button class="quiz-option" onclick="quizAnswer(this,false)">Magnetic force</button><div class="quiz-result"></div></div>
+    <div class="quiz-card"><h3>14. Orbital Speed</h3><p>For a circular orbit around the same central mass, a planet closer to the Sun generally moves:</p><button class="quiz-option" onclick="quizAnswer(this,true)">Faster</button><button class="quiz-option" onclick="quizAnswer(this,false)">Slower</button><button class="quiz-option" onclick="quizAnswer(this,false)">At exactly the same speed</button><div class="quiz-result"></div></div>
+    <div class="quiz-card"><h3>15. Kepler’s Third Law</h3><p>For planets orbiting the same central body, the square of the orbital period is proportional to:</p><button class="quiz-option" onclick="quizAnswer(this,false)">Orbital radius</button><button class="quiz-option" onclick="quizAnswer(this,false)">The cube of the orbital radius</button><button class="quiz-option" onclick="quizAnswer(this,true)">The cube of the orbital radius (T² ∝ r³)</button><div class="quiz-result"></div></div>
+  </div>
+</section>
+
+<!-- ================= EXPERIMENTS DASHBOARD ================= -->
+<section class="card" id="experimentsDashboard">
+  <h2 style="text-align:center;">🚀 Experiments Dashboard</h2>
+  <p style="text-align:center;">Choose an experiment. Each lab opens below in this single dashboard.</p>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-card"><h3>⚡ Ohm's Law</h3><p>Explore voltage, resistance, current and power.</p><button type="button" onclick="openDashboardExperiment('ohm')">Start Experiment</button></div>
+    <div class="dashboard-card"><h3>🔌 Advanced Series–Parallel Circuit</h3><p>Build resistor networks, toggle branches and compare live electrical measurements.</p><button type="button" onclick="openDashboardExperiment('seriesparallel')">Start Experiment</button></div>
+    <div class="dashboard-card"><h3>🧲 Electromagnetic Induction</h3><p>Explore changing magnetic flux, induced EMF, current and Lenz's law.</p><button type="button" onclick="openDashboardExperiment('em')">Start Experiment</button></div>
+    <div class="dashboard-card"><h3>🪐 Advanced Planetary Motion & Gravity Simulator</h3><p>Explore orbital motion, gravity, orbital speed, period, central mass and gravitational force.</p><button type="button" onclick="openDashboardExperiment('planetary')">Launch Space Simulator</button></div>
+    <div class="dashboard-card"><h3>🌍 Gravity / Free Fall</h3><p>Explore falling objects and gravitational motion near a planetary surface.</p><button type="button" onclick="openDashboardExperiment('gravity')">Start Experiment</button></div>
+    <div class="dashboard-card"><h3>🔍 Convex Lens</h3><p>Explore focal length, image distance and magnification.</p><button type="button" onclick="openDashboardExperiment('lens')">Start Experiment</button></div>
+    <div class="dashboard-card"><h3>🚀 Projectile Motion</h3><p>Study trajectory, range, maximum height, time and velocity.</p><button type="button" onclick="openDashboardExperiment('projectile')">Start Experiment</button></div>
+  </div>
+
+  <div id="experimentInfo" style="margin-top:20px;padding:20px;background:#020617;border-radius:12px;border:1px solid #334155;line-height:1.7;">
+    <h3>⚡ Choose an experiment</h3>
+    <p>Select any experiment above to open its interactive lab here.</p>
+  </div>
+</section>
+<!-- ================= END DASHBOARD ================= -->
+
+</main>
+
+<footer>
+    © 2026 Physics With Omii | Interactive Physics Learning
+</footer>
+
+
+<script>
+
+let animation;
+let running = false;
+
+function startExperiment(){
+
+    if(running) return;
+
+    running = true;
+
+    const electron = document.getElementById("electron");
+
+    electron.style.display = "block";
+
+    let position = 12;
+
+    animation = setInterval(function(){
+
+        position += 1;
+
+        if(position > 82){
+            position = 12;
+        }
+
+        electron.style.left = position + "%";
+
+    },50);
+
+}
+
+function stopExperiment(){
+
+    running = false;
+
+    clearInterval(animation);
+
+}
+
+function resetExperiment(){
+
+    running = false;
+
+    clearInterval(animation);
+
+    const electron = document.getElementById("electron");
+
+    electron.style.display = "none";
+
+    electron.style.left = "12%";
+
+    document.getElementById("voltage").innerText = "12 V";
+    document.getElementById("resistance").innerText = "6 Ω";
+    document.getElementById("current").innerText = "2 A";
+
+}
+function showExperiment(type){
+
+    const box = document.getElementById("experimentInfo");
+
+    if(!box) return;
+
+    if(type === "ohm"){
+
+        box.innerHTML = `
+            <h3>⚡ Advanced Ohm's Law Lab</h3>
+            <p style="margin-top:8px;">
+                Change voltage and resistance and observe current, power,
+                bulb brightness, resistor heating and the V-I graph in real time.
+            </p>
+
+            <div style="margin-top:18px;background:#0f172a;padding:16px;border-radius:15px;border:1px solid #334155;">
+
+                <h3>🔋 Interactive Circuit</h3>
+
+                <div style="height:190px;margin-top:14px;background:#020617;border-radius:12px;position:relative;overflow:hidden;border:1px solid #334155;">
+
+                    <div style="position:absolute;width:34%;height:5px;background:#64748b;left:7%;top:50%;"></div>
+                    <div style="position:absolute;width:34%;height:5px;background:#64748b;right:7%;top:50%;"></div>
+
+                    <div style="position:absolute;left:43%;top:35%;width:78px;height:52px;background:#dc2626;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:bold;">
+                        🔋 <span id="advancedBatteryText">12V</span>
+                    </div>
+
+                    <div id="advancedResistor" style="position:absolute;left:18%;top:40%;width:70px;height:38px;background:#f59e0b;color:#111;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:bold;transition:.2s;">
+                        6Ω
+                    </div>
+
+                    <div id="advancedBulb" style="position:absolute;right:18%;top:34%;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;filter:brightness(.8);transition:.15s;">
+                        💡
+                    </div>
+
+                    <div id="advancedElectron" style="position:absolute;width:13px;height:13px;background:#38bdf8;border-radius:50%;box-shadow:0 0 15px #38bdf8;left:8%;top:47%;display:none;"></div>
+                </div>
+
+                <div style="margin-top:18px;">
+                    <label><b>Voltage:</b> <strong id="advVoltageValue">12 V</strong></label>
+                    <input id="advVoltage" type="range" min="1" max="24" step="1" value="12"
+                        oninput="updateAdvancedOhm()" style="width:100%;margin:9px 0 18px;">
+
+                    <label><b>Resistance:</b> <strong id="advResistanceValue">6 Ω</strong></label>
+                    <input id="advResistance" type="range" min="1" max="20" step="1" value="6"
+                        oninput="updateAdvancedOhm()" style="width:100%;margin:9px 0 18px;">
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;">
+                    <div style="background:#020617;padding:14px;border-radius:10px;text-align:center;">
+                        Voltage
+                        <strong id="advLiveVoltage" style="display:block;margin-top:7px;color:#38bdf8;">12 V</strong>
+                    </div>
+                    <div style="background:#020617;padding:14px;border-radius:10px;text-align:center;">
+                        Resistance
+                        <strong id="advLiveResistance" style="display:block;margin-top:7px;color:#38bdf8;">6 Ω</strong>
+                    </div>
+                    <div style="background:#020617;padding:14px;border-radius:10px;text-align:center;">
+                        Current
+                        <strong id="advLiveCurrent" style="display:block;margin-top:7px;color:#22c55e;">2.00 A</strong>
+                    </div>
+                    <div style="background:#020617;padding:14px;border-radius:10px;text-align:center;">
+                        Power
+                        <strong id="advLivePower" style="display:block;margin-top:7px;color:#f59e0b;">24.00 W</strong>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;background:#020617;padding:14px;border-radius:10px;">
+                    <b>🔥 Resistor Heat / Power</b>
+                    <div style="height:18px;background:#1e293b;border-radius:10px;overflow:hidden;margin-top:9px;">
+                        <div id="ohmHeatBar" style="width:25%;height:100%;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);transition:.2s;"></div>
+                    </div>
+                    <p id="ohmHeatText" style="margin-top:8px;">Heat level: 25%</p>
+                </div>
+
+                <div style="margin-top:16px;background:#020617;padding:14px;border-radius:10px;">
+                    <b>📈 V-I Relationship</b>
+                    <canvas id="ohmGraph" width="700" height="300"
+                        style="width:100%;height:auto;margin-top:10px;background:#020617;border-radius:8px;"></canvas>
+                    <p style="margin-top:8px;color:#94a3b8;font-size:13px;">
+                        Straight-line graph for the selected resistance: V = I × R.
+                    </p>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;">
+                    <div style="background:#020617;padding:14px;border-radius:10px;text-align:center;">
+                        💡 Bulb Brightness
+                        <strong id="ohmBrightness" style="display:block;margin-top:7px;">25%</strong>
+                    </div>
+                    <div style="background:#020617;padding:14px;border-radius:10px;text-align:center;">
+                        ⚡ Current
+                        <strong style="display:block;margin-top:7px;">I = V / R</strong>
+                    </div>
+                </div>
+
+                <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <button onclick="startAdvancedOhm()">▶ Start</button>
+                    <button class="stop" onclick="stopAdvancedOhm()">■ Stop</button>
+                    <button class="reset" onclick="resetAdvancedOhm()">↻ Reset</button>
+                </div>
+
+                <p style="margin-top:16px;padding:14px;background:#020617;border-radius:10px;">
+                    <b>Ohm's Law:</b> V = I × R
+                    <br><b>Current:</b> I = V / R
+                    <br><b>Power:</b> P = V × I = V² / R
+                </p>
+            </div>
+        `;
+
+        updateAdvancedOhm();
+    }
+
+    else if(type === "planetary"){
+      box.innerHTML = `
+        <div style="color:#e2e8f0;background:radial-gradient(circle at 50% 42%,#172554,#020617 70%);padding:clamp(12px,3vw,24px);border-radius:18px;border:1px solid #334155;">
+          <h2 style="margin:0 0 8px">🪐 Advanced Planetary Motion & Gravity Simulator</h2>
+          <p style="color:#cbd5e1;line-height:1.65">Explore a simplified Newtonian solar-system model. Select a planet, adjust the central mass and simulation speed, toggle trails and compare orbital speed, period, distance and gravitational force. Orbits are idealised circles; the visual layout is not to scale.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0">
+            <label style="background:#0f172a;padding:12px;border-radius:12px">🪐 Planet<select id="plPlanet" onchange="updatePlanetaryLab()" style="display:block;width:100%;margin-top:8px;padding:8px;border-radius:8px;background:#1e293b;color:#fff"><option value="0">Mercury</option><option value="1">Venus</option><option value="2" selected>Earth</option><option value="3">Mars</option><option value="4">Jupiter</option><option value="5">Saturn</option><option value="6">Uranus</option><option value="7">Neptune</option></select></label>
+            <label style="background:#0f172a;padding:12px;border-radius:12px">☀️ Central mass <b><span id="plMassVal">1.00</span> M☉</b><input id="plMass" type="range" min="0.25" max="3" step="0.05" value="1" oninput="updatePlanetaryLab()" style="display:block;width:100%;margin-top:10px"></label>
+            <label style="background:#0f172a;padding:12px;border-radius:12px">⏩ Simulation speed <b><span id="plSpeedVal">1.0</span>×</b><input id="plSpeed" type="range" min="0.1" max="8" step="0.1" value="1" oninput="updatePlanetaryLab()" style="display:block;width:100%;margin-top:10px"></label>
+            <label style="background:#0f172a;padding:12px;border-radius:12px">🔭 Orbit scale <b><span id="plZoomVal">1.0</span>×</b><input id="plZoom" type="range" min="0.6" max="1.5" step="0.1" value="1" oninput="updatePlanetaryLab()" style="display:block;width:100%;margin-top:10px"></label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0"><button onclick="startPlanetaryLab()">▶ Run</button><button onclick="pausePlanetaryLab()">⏸ Pause</button><button onclick="resetPlanetaryLab()">↻ Reset</button><button onclick="togglePlanetaryTrails()" id="plTrailBtn">✨ Trails: On</button></div>
+          <div style="background:#020617;border:1px solid #334155;border-radius:14px;overflow:hidden"><canvas id="planetaryCanvas" width="900" height="540" style="width:100%;height:auto;display:block;touch-action:pan-y"></canvas></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-top:14px">
+            <div style="background:#0f172a;padding:12px;border-radius:10px"><small>Orbital distance</small><h3 id="plDistance">1.00 AU</h3></div>
+            <div style="background:#0f172a;padding:12px;border-radius:10px"><small>Orbital period</small><h3 id="plPeriod">1.00 years</h3></div>
+            <div style="background:#0f172a;padding:12px;border-radius:10px"><small>Orbital speed</small><h3 id="plVelocity">29.78 km/s</h3></div>
+            <div style="background:#0f172a;padding:12px;border-radius:10px"><small>Gravity at orbit</small><h3 id="plAccel">0.00593 m/s²</h3></div>
+            <div style="background:#0f172a;padding:12px;border-radius:10px"><small>Gravity force on planet</small><h3 id="plForce">—</h3></div>
+            <div style="background:#0f172a;padding:12px;border-radius:10px"><small>Simulation time</small><h3 id="plTime">0.00 years</h3></div>
+          </div>
+          <div style="margin-top:16px;padding:16px;background:#0f172a;border-radius:12px;line-height:1.75">
+            <h3>📘 Advanced Notes & Key Physics</h3>
+            <p><b>Newton's universal gravitation:</b> F = GMm/r². The force increases with either mass and decreases with the square of separation.</p>
+            <p><b>Circular orbital speed:</b> v = √(GM/r). A closer orbit around the same central body requires greater orbital speed.</p>
+            <p><b>Orbital period:</b> T = 2π√(r³/GM), so T² ∝ r³ for objects orbiting the same central mass (Kepler's third law).</p>
+            <p><b>Gravitational acceleration:</b> g = GM/r². In this model, changing central mass changes orbital speed and period; planet selection changes the reference orbital radius and mass.</p>
+            <p><b>How to investigate:</b> choose planets, change central mass, compare period/speed, pause the simulation and inspect the measurements. Turn trails off for a cleaner view.</p>
+            <p><b>Model limits:</b> educational circular orbits, exaggerated drawing sizes, no mutual planet interactions, no moons, atmosphere, relativistic effects or actual ephemeris timing. Values are approximate and the force display uses each planet's approximate mass.</p>
+          </div>
+        </div>`;
+      initPlanetaryLab();
+    }
+
+    else if(type === "gravity"){
+
+    experimentInfo.innerHTML = `
+        <h2>🌍 Gravity Experiment</h2>
+
+        <p>Select an object and environment, then press Start.</p>
+
+        <div style="margin:15px 0;">
+
+            <label><b>Object:</b></label>
+            <select id="gravityObjectSelect"
+                onchange="updateGravityObject()">
+                <option value="ball">🟠 Ball</option>
+                <option value="stone">🪨 Stone</option>
+                <option value="feather">🪶 Feather</option>
+                <option value="box">📦 Box</option>
+            </select>
+
+            <br><br>
+
+            <label><b>Environment:</b></label>
+            <select id="gravityEnvironment">
+                <option value="vacuum">Vacuum</option>
+                <option value="air">Air</option>
+            </select>
+
+        </div>
+
+        <div id="gravityScene"
+            style="
+            position:relative;
+            height:330px;
+            background:linear-gradient(#87ceeb,#e0f2fe);
+            border-radius:15px;
+            overflow:hidden;
+            margin-top:20px;
+            border:2px solid #38bdf8;
+            ">
+
+            <div style="
+                position:absolute;
+                bottom:0;
+                width:100%;
+                height:35px;
+                background:#65a30d;
+            "></div>
+
+            <div id="gravityObject"
+                style="
+                position:absolute;
+                top:25px;
+                left:50%;
+                transform:translateX(-50%);
+                font-size:42px;
+                width:55px;
+                height:55px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                ">
+                🟠
+            </div>
+
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:10px;
+            margin-top:20px;
+            ">
+
+            <div>
+                <b>Time</b>
+                <p id="gravityTime">0.00 s</p>
+            </div>
+
+            <div>
+                <b>Speed</b>
+                <p id="gravitySpeed">0.00 m/s</p>
+            </div>
+
+            <div>
+                <b>Distance</b>
+                <p id="gravityDistance">0.00 m</p>
+            </div>
+
+        </div>
+
+        <p>
+            <b>Gravity:</b> 9.8 m/s²
+        </p>
+
+        <p>
+            Formula: <b>v = g × t</b>
+        </p>
+
+        <button onclick="startGravity()">▶ Start</button>
+        <button onclick="stopGravity()">⏸ Stop</button>
+        <button onclick="resetGravity()">🔄 Reset</button>
+    `;
+}
+          else if(type === "pendulum"){
+
+    experimentInfo.innerHTML = `
+        <h2>🔄 Realistic Simple Pendulum</h2>
+
+        <div style="margin:15px 0;">
+
+            <label>
+                <b>Length:</b>
+                <span id="pendulumLengthValue">1.00 m</span>
+            </label>
+
+            <input type="range"
+                id="pendulumLength"
+                min="0.5"
+                max="2.5"
+                step="0.1"
+                value="1"
+                oninput="updatePendulum()"
+                style="width:100%;">
+
+            <br><br>
+
+            <label>
+                <b>Mass:</b>
+                <span id="pendulumMassValue">1.00 kg</span>
+            </label>
+
+            <input type="range"
+                id="pendulumMass"
+                min="0.2"
+                max="5"
+                step="0.1"
+                value="1"
+                oninput="updatePendulum()"
+                style="width:100%;">
+
+            <br><br>
+
+            <label>
+                <b>Oscillation Speed:</b>
+                <span id="pendulumSpeedValue">1.0×</span>
+            </label>
+
+            <input type="range"
+                id="pendulumSpeed"
+                min="0.2"
+                max="2.5"
+                step="0.1"
+                value="1"
+                oninput="updatePendulumSpeed()"
+                style="width:100%;">
+
+        </div>
+
+        <div id="pendulumScene"
+            style="
+            position:relative;
+            height:380px;
+            background:linear-gradient(#020617,#0f172a);
+            border-radius:16px;
+            overflow:hidden;
+            border:2px solid #475569;
+            margin-top:20px;
+            ">
+
+            <!-- ceiling -->
+            <div style="
+                position:absolute;
+                top:18px;
+                left:8%;
+                width:84%;
+                height:12px;
+                background:#94a3b8;
+                border-radius:5px;
+            "></div>
+
+            <!-- pivot -->
+            <div id="pendulumPivot"
+                style="
+                position:absolute;
+                top:25px;
+                left:50%;
+                width:18px;
+                height:18px;
+                transform:translateX(-50%);
+                background:#e2e8f0;
+                border-radius:50%;
+                z-index:5;
+                "></div>
+
+            <!-- pendulum -->
+            <div id="pendulumArm"
+                style="
+                position:absolute;
+                top:34px;
+                left:50%;
+                width:6px;
+                height:180px;
+                background:#cbd5e1;
+                transform-origin:top center;
+                transform:translateX(-50%) rotate(25deg);
+                border-radius:4px;
+                z-index:3;
+                "></div>
+
+            <!-- bob -->
+            <div id="pendulumBob"
+                style="
+                position:absolute;
+                top:202px;
+                left:50%;
+                width:52px;
+                height:52px;
+                transform:translateX(-50%);
+                background:radial-gradient(circle at 30% 25%,#fde68a,#f59e0b 45%,#92400e);
+                border-radius:50%;
+                box-shadow:inset -8px -8px 12px rgba(0,0,0,.35);
+                z-index:4;
+                "></div>
+
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:12px;
+            margin-top:18px;
+            text-align:center;
+            ">
+
+            <div>
+                <b>Time Period</b>
+                <p id="pendulumPeriod">2.01 s</p>
+            </div>
+
+            <div>
+                <b>Frequency</b>
+                <p id="pendulumFrequency">0.50 Hz</p>
+            </div>
+
+            <div>
+                <b>Length</b>
+                <p id="pendulumLengthDisplay">1.00 m</p>
+            </div>
+
+            <div>
+                <b>Mass</b>
+                <p id="pendulumMassDisplay">1.00 kg</p>
+            </div>
+
+        </div>
+
+        <p>
+            <b>Formula:</b>
+            T = 2π√(L/g)
+        </p>
+
+        <p>
+            💡 Increasing <b>length</b> increases the time period.
+            For an ideal simple pendulum, changing <b>mass</b>
+            does not change the time period.
+        </p>
+
+        <button onclick="startPendulum()">▶ Start</button>
+        <button onclick="stopPendulum()">⏸ Stop</button>
+        <button onclick="resetPendulum()">🔄 Reset</button>
+    `;
+
+    updatePendulum();
+}
+
+  if(type === "lens"){
+
+    experimentInfo.innerHTML = `
+        <h2>🔍 Advanced Convex Lens Lab</h2>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:15px 0;">
+
+            <div style="background:#111827;padding:14px;border-radius:12px;">
+                <label><b>📏 Focal Length:</b>
+                <span id="lensFValue">10 cm</span></label>
+                <input id="lensF" type="range" min="5" max="30" step="1" value="10"
+                       oninput="updateLensAdvanced()">
+            </div>
+
+            <div style="background:#111827;padding:14px;border-radius:12px;">
+                <label><b>📦 Object Distance:</b>
+                <span id="lensUValue">20 cm</span></label>
+                <input id="lensU" type="range" min="6" max="60" step="1" value="20"
+                       oninput="updateLensAdvanced()">
+            </div>
+
+            <div style="background:#111827;padding:14px;border-radius:12px;">
+                <label><b>📐 Object Height:</b>
+                <span id="lensHValue">5 cm</span></label>
+                <input id="lensH" type="range" min="1" max="15" step="0.5" value="5"
+                       oninput="updateLensAdvanced()">
+            </div>
+
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:15px 0;">
+            <button onclick="startLensAdvanced()">▶ Start</button>
+            <button onclick="stopLensAdvanced()">⏸ Stop</button>
+            <button onclick="resetLensAdvanced()">🔄 Reset</button>
+        </div>
+
+        <div style="
+            position:relative;
+            height:390px;
+            max-width:750px;
+            margin:20px auto;
+            background:#0b1220;
+            border:1px solid #334155;
+            border-radius:18px;
+            overflow:hidden;
+        ">
+
+            <!-- Principal axis -->
+            <div style="
+                position:absolute;
+                left:20px;
+                right:20px;
+                top:195px;
+                height:2px;
+                background:#94a3b8;
+            "></div>
+
+            <!-- Lens -->
+            <div id="lensGlass" style="
+                position:absolute;
+                left:50%;
+                top:65px;
+                width:18px;
+                height:260px;
+                transform:translateX(-50%);
+                border-radius:50%;
+                background:linear-gradient(90deg,#60a5fa,#dbeafe,#60a5fa);
+                box-shadow:0 0 18px rgba(96,165,250,.6);
+                z-index:3;
+            "></div>
+
+            <div style="
+                position:absolute;
+                left:50%;
+                top:40px;
+                transform:translateX(-50%);
+                color:#bfdbfe;
+                font-weight:bold;
+            ">CONVEX LENS</div>
+
+            <!-- Object -->
+            <div id="lensObject" style="
+                position:absolute;
+                left:20%;
+                top:145px;
+                width:6px;
+                height:100px;
+                background:#f59e0b;
+                z-index:4;
+            ">
+                <div style="
+                    position:absolute;
+                    top:-12px;
+                    left:-7px;
+                    width:0;
+                    height:0;
+                    border-left:10px solid transparent;
+                    border-right:10px solid transparent;
+                    border-bottom:16px solid #f59e0b;
+                "></div>
+            </div>
+
+            <!-- Image -->
+            <div id="lensImage" style="
+                position:absolute;
+                left:80%;
+                top:195px;
+                width:6px;
+                height:80px;
+                background:#ef4444;
+                transform-origin:bottom center;
+                z-index:4;
+            "></div>
+
+            <!-- Focal points -->
+            <div id="focusLeft" style="
+                position:absolute;
+                left:42%;
+                top:187px;
+                width:16px;
+                height:16px;
+                border:2px solid #22c55e;
+                border-radius:50%;
+            "></div>
+
+            <div id="focusRight" style="
+                position:absolute;
+                left:58%;
+                top:187px;
+                width:16px;
+                height:16px;
+                border:2px solid #22c55e;
+                border-radius:50%;
+            "></div>
+
+            <div style="
+                position:absolute;
+                left:0;
+                right:0;
+                bottom:10px;
+                text-align:center;
+                color:#94a3b8;
+                font-size:13px;
+            ">
+                Object → Convex Lens → Real / Virtual Image
+            </div>
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+            gap:10px;
+            margin-top:15px;
+        ">
+
+            <div style="background:#111827;padding:12px;border-radius:10px;text-align:center;">
+                <b>Image Distance</b>
+                <div id="lensV">20 cm</div>
+            </div>
+
+            <div style="background:#111827;padding:12px;border-radius:10px;text-align:center;">
+                <b>Magnification</b>
+                <div id="lensM">-1.00×</div>
+            </div>
+
+            <div style="background:#111827;padding:12px;border-radius:10px;text-align:center;">
+                <b>Image Height</b>
+                <div id="lensImageHeight">5 cm</div>
+            </div>
+
+            <div style="background:#111827;padding:12px;border-radius:10px;text-align:center;">
+                <b>Image Type</b>
+                <div id="lensType">Real</div>
+            </div>
+
+            <div style="background:#111827;padding:12px;border-radius:10px;text-align:center;">
+                <b>Orientation</b>
+                <div id="lensOrientation">Inverted</div>
+            </div>
+
+        </div>
+
+        <div style="
+            margin-top:16px;
+            background:#0f172a;
+            padding:14px;
+            border-radius:12px;
+            line-height:1.8;
+        ">
+            <b>📘 Lens Formula</b><br>
+            <b>1/f = 1/v − 1/u</b><br>
+            Magnification: <b>m = v/u</b><br>
+            Image height: <b>h' = m × h</b>
+        </div>
+    `;
+
+    updateLensAdvanced();
+}
+
+    
+
+    else if(type === "seriesparallel"){
+        box.innerHTML = `
+        <h2>🔌 Advanced Series–Parallel Circuit Lab</h2>
+        <p style="color:#cbd5e1;line-height:1.7">Explore a DC source feeding three resistors. Switch between a series chain and parallel branches, change the supply and resistor values, and open or close each branch. All measurements update live using ideal resistors and an ideal voltage source (wire/source resistance is not modelled).</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:16px 0">
+          <label class="value" style="display:block;text-align:left">🔋 Supply voltage <b><span id="spVoltageValue">12</span> V</b><input id="spVoltage" type="range" min="1" max="24" step="1" value="12" style="width:100%" oninput="updateSeriesParallelLab()"></label>
+          <label class="value" style="display:block;text-align:left">R₁ <b><span id="spR1Value">100</span> Ω</b><input id="spR1" type="range" min="10" max="500" step="10" value="100" style="width:100%" oninput="updateSeriesParallelLab()"></label>
+          <label class="value" style="display:block;text-align:left">R₂ <b><span id="spR2Value">220</span> Ω</b><input id="spR2" type="range" min="10" max="500" step="10" value="220" style="width:100%" oninput="updateSeriesParallelLab()"></label>
+          <label class="value" style="display:block;text-align:left">R₃ <b><span id="spR3Value">330</span> Ω</b><input id="spR3" type="range" min="10" max="500" step="10" value="330" style="width:100%" oninput="updateSeriesParallelLab()"></label>
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap;margin:12px 0;align-items:center">
+          <button type="button" id="spSeriesBtn" onclick="setSeriesParallelMode('series')">Series mode</button>
+          <button type="button" id="spParallelBtn" onclick="setSeriesParallelMode('parallel')">Parallel mode</button>
+          <button type="button" onclick="resetSeriesParallelLab()">↺ Reset lab</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0">
+          <label class="value">Branch 1 <input id="spBranch1" type="checkbox" checked onchange="updateSeriesParallelLab()"> Closed</label>
+          <label class="value">Branch 2 <input id="spBranch2" type="checkbox" checked onchange="updateSeriesParallelLab()"> Closed</label>
+          <label class="value">Branch 3 <input id="spBranch3" type="checkbox" checked onchange="updateSeriesParallelLab()"> Closed</label>
+        </div>
+        <div style="background:#020617;border:1px solid #334155;border-radius:14px;padding:12px;margin:14px 0">
+          <h3>⚡ Live circuit schematic</h3>
+          <svg id="spCircuitSvg" viewBox="0 0 800 290" role="img" aria-label="Schematic of the selected resistor circuit" style="width:100%;height:auto;display:block">
+            <rect x="0" y="0" width="800" height="290" rx="12" fill="#020617"/>
+            <g stroke="#64748b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M105 70 H270 M390 70 H690 V225 H105 V70"/><path d="M105 135 H250 M370 135 H690"/><path d="M105 180 H250 M370 180 H690"/></g>
+            <g fill="#f59e0b" stroke="#fde68a" stroke-width="2"><rect x="270" y="51" width="120" height="38" rx="7"/><rect x="250" y="116" width="120" height="38" rx="7"/><rect x="250" y="161" width="120" height="38" rx="7"/></g>
+            <g fill="#111827" font-size="17" font-weight="bold" text-anchor="middle"><text id="spSvgR1" x="330" y="76">R₁ 100Ω</text><text id="spSvgR2" x="310" y="141">R₂ 220Ω</text><text id="spSvgR3" x="310" y="186">R₃ 330Ω</text></g>
+            <g fill="#38bdf8" font-size="16" font-weight="bold"><text x="25" y="145">DC source</text><text id="spSvgMode" x="510" y="265">Series mode</text></g>
+            <g stroke="#e2e8f0" stroke-width="4"><path d="M80 125 V165 M65 135 H95 M70 155 H90"/></g>
+          </svg>
+          <p id="spStatus" style="color:#cbd5e1;margin:8px 0 0">All branches closed.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:14px 0">
+          <div class="value">Topology <b id="spModeReadout">Series</b></div><div class="value">Equivalent resistance <b id="spReq">650.00 Ω</b></div><div class="value">Source current <b id="spItotal">18.46 mA</b></div><div class="value">Total power <b id="spPtotal">0.222 W</b></div><div class="value">Source voltage <b id="spVtotal">12.00 V</b></div><div class="value">Active branches <b id="spActive">3 / 3</b></div>
+        </div>
+        <h3>📊 Component measurements</h3>
+        <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:520px"><thead><tr><th style="padding:10px;text-align:left;border-bottom:1px solid #475569">Component</th><th style="padding:10px;text-align:left;border-bottom:1px solid #475569">Resistance</th><th style="padding:10px;text-align:left;border-bottom:1px solid #475569">Voltage</th><th style="padding:10px;text-align:left;border-bottom:1px solid #475569">Current</th><th style="padding:10px;text-align:left;border-bottom:1px solid #475569">Power</th></tr></thead><tbody id="spMeasurements"></tbody></table></div>
+        <h3 style="margin-top:20px">📘 Notes &amp; theory</h3>
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:16px;line-height:1.75">
+          <p><b>Aim:</b> Compare voltage, current, equivalent resistance and power in series and parallel resistor networks.</p>
+          <p><b>Series:</b> One path for current. The same current flows through every active resistor; voltage drops add. <b>Rₜ = R₁ + R₂ + R₃</b> for three connected resistors.</p>
+          <p><b>Parallel:</b> Each branch is connected across the same two nodes, so each closed branch has the same voltage. Currents add: <b>Iₜ = I₁ + I₂ + I₃</b>. Equivalent resistance follows <b>1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃</b>.</p>
+          <p><b>Ohm’s law:</b> V = IR. <b>Power:</b> P = VI = I²R = V²/R. <b>Kirchhoff current law:</b> current entering a junction equals current leaving it. <b>Kirchhoff voltage law:</b> the algebraic sum of voltage changes around a closed loop is zero.</p>
+          <p><b>Procedure:</b> Select topology; adjust supply and resistor sliders; open or close branches; record the live table; compare total current, voltage drops and power. In series, opening any component interrupts the single path. In parallel, opening one branch leaves other closed branches working.</p>
+          <p><b>Safety / model note:</b> This is a low-voltage educational simulation, not a physical wiring guide. Real circuits can heat and short-circuit; use proper components and supervision for hardware experiments.</p>
+        </div>
+        `;
+        updateSeriesParallelLab();
+    }
+
+    else if(type === "em"){
+        box.innerHTML = `
+        <h2>🧲 Advanced Electromagnetic Induction Lab</h2>
+        <p style="color:#cbd5e1;line-height:1.7">Explore Faraday’s law and Lenz’s law. Change magnet speed, magnetic strength and coil turns. The live simulation shows magnetic flux, induced EMF, relative current and polarity. Values are an educational model, not calibrated laboratory measurements.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:16px 0">
+          <label class="value" style="display:block;text-align:left">🧲 Magnet speed <b><span id="emSpeedValue">2.0</span> m/s</b><input id="emSpeed" type="range" min="0.2" max="5" step="0.1" value="2" style="width:100%" oninput="updateEMLab()"></label>
+          <label class="value" style="display:block;text-align:left">🧵 Coil turns <b><span id="emTurnsValue">400</span></b><input id="emTurns" type="range" min="100" max="1000" step="50" value="400" style="width:100%" oninput="updateEMLab()"></label>
+          <label class="value" style="display:block;text-align:left">🧲 Field strength <b><span id="emFieldValue">0.8</span> T</b><input id="emField" type="range" min="0.1" max="1.5" step="0.1" value="0.8" style="width:100%" oninput="updateEMLab()"></label>
+          <label class="value" style="display:block;text-align:left">🔌 Circuit resistance <b><span id="emResistanceValue">10</span> Ω</b><input id="emResistance" type="range" min="2" max="50" step="1" value="10" style="width:100%" oninput="updateEMLab()"></label>
+        </div>
+
+        <div style="display:flex;gap:9px;flex-wrap:wrap;margin:12px 0">
+          <button type="button" onclick="startEMLab()">▶ Start motion</button>
+          <button type="button" onclick="stopEMLab()">⏸ Pause</button>
+          <button type="button" onclick="reverseEMLab()">↔ Reverse direction</button>
+          <button type="button" onclick="resetEMLab()">↻ Reset</button>
+        </div>
+
+        <div style="background:#0b1220;border:1px solid #334155;border-radius:14px;padding:10px;margin-top:14px">
+          <canvas id="emCanvas" width="900" height="340" aria-label="Animated bar magnet moving through a coil and galvanometer" style="display:block;width:100%;height:auto"></canvas>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-top:14px">
+          <div class="value">Magnetic flux <b id="emFlux">0.000 Wb/turn</b></div>
+          <div class="value">Induced EMF <b id="emEmf">0.00 V</b></div>
+          <div class="value">Model current <b id="emCurrent">0.00 A</b></div>
+          <div class="value">Polarity <b id="emPolarity">No induced polarity</b></div>
+        </div>
+
+        <div style="background:#0b1220;border:1px solid #334155;border-radius:14px;padding:10px;margin-top:14px">
+          <h3 style="margin:6px 4px 10px">📈 Induced EMF history</h3>
+          <canvas id="emGraph" width="900" height="230" aria-label="Graph of induced EMF over time" style="display:block;width:100%;height:auto"></canvas>
+        </div>
+        <div style="background:#111827;padding:14px;border-radius:12px;margin-top:14px;line-height:1.7">
+          <b>Faraday’s law:</b> ε = −N · dΦ/dt<br>
+          <b>Lenz’s law:</b> the induced current creates a magnetic effect that opposes the change in magnetic flux.<br>
+          <span style="color:#cbd5e1">Try increasing the number of turns or magnet speed. Reverse the direction to see the sign of induced EMF change. The displayed current is estimated using I = ε/R.</span>
+        </div>
+
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:16px;margin-top:16px;line-height:1.8">
+          <h3>📘 Experiment Notes: Electromagnetic Induction</h3>
+          <p><b>Aim:</b> To investigate how magnet motion and magnetic flux changes induce EMF in a coil.</p>
+          <p><b>Apparatus (simulated):</b> Bar magnet, multi-turn coil, connecting wires, galvanometer and a variable resistance.</p>
+          <p><b>Principle:</b> An EMF is induced when the magnetic flux linked with a circuit changes. A magnet held still relative to the coil produces no continuing induced EMF in this model.</p>
+          <p><b>Magnetic flux:</b> Φ = B A cos θ, where B is magnetic field, A is coil area and θ is the angle between the field and the area normal.</p>
+          <p><b>Faraday’s law:</b> ε = −N(dΦ/dt). The magnitude of induced EMF depends on the number of turns N and how quickly flux changes.</p>
+          <p><b>Lenz’s law:</b> The minus sign indicates that induced current produces a magnetic effect opposing the change in flux that caused it.</p>
+          <p><b>Current estimate:</b> For the simplified resistive circuit, I = ε/R. Increasing resistance lowers current for the same EMF.</p>
+          <p><b>Procedure:</b> Start motion; observe the galvanometer and graph. Change speed, field strength, coil turns and resistance one at a time. Pause and reverse the direction, then compare the sign and magnitude of EMF.</p>
+          <p><b>Expected observations:</b> Faster motion or more turns generally gives a larger EMF magnitude; reversing the direction reverses polarity. EMF approaches zero when flux is not changing.</p>
+          <p><b>Applications:</b> Electric generators, transformers, induction cooktops, dynamic microphones and many sensing systems.</p>
+          <p><b>Precautions / limitations:</b> This is an idealized educational simulation. The values depend on its simplified flux model and are not calibrated real-lab readings.</p>
+          <p><b>Conclusion:</b> Electromagnetic induction depends on changing magnetic flux, while Faraday’s and Lenz’s laws describe the induced EMF and its direction.</p>
+        </div>
+        `;
+        resetEMLab();
+    }
+    else if(type === "projectile"){
+
+        box.innerHTML = `
+        <h2>🚀 Advanced Projectile Motion Lab</h2>
+        <p style="margin-top:8px;">
+            Change launch speed, angle, gravity and launch height. Observe the trajectory,
+            range, maximum height, flight time and live velocity.
+        </p>
+
+        <div style="margin-top:18px;background:#0f172a;padding:16px;border-radius:15px;border:1px solid #334155;">
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;">
+
+                <label style="background:#111827;padding:14px;border-radius:12px;">
+                    🚀 Initial Speed
+                    <input id="projectileSpeed" type="range" min="5" max="50" value="25" step="1"
+                        style="width:100%;" oninput="updateProjectileAdvanced()">
+                    <b><span id="projectileSpeedValue">25</span> m/s</b>
+                </label>
+
+                <label style="background:#111827;padding:14px;border-radius:12px;">
+                    📐 Launch Angle
+                    <input id="projectileAngle" type="range" min="10" max="80" value="45" step="1"
+                        style="width:100%;" oninput="updateProjectileAdvanced()">
+                    <b><span id="projectileAngleValue">45</span>°</b>
+                </label>
+
+                <label style="background:#111827;padding:14px;border-radius:12px;">
+                    🌍 Gravity
+                    <input id="projectileGravity" type="range" min="1" max="20" value="9.8" step="0.1"
+                        style="width:100%;" oninput="updateProjectileAdvanced()">
+                    <b><span id="projectileGravityValue">9.8</span> m/s²</b>
+                </label>
+
+                <label style="background:#111827;padding:14px;border-radius:12px;">
+                    🏔️ Launch Height
+                    <input id="projectileHeight" type="range" min="0" max="20" value="0" step="0.5"
+                        style="width:100%;" oninput="updateProjectileAdvanced()">
+                    <b><span id="projectileHeightValue">0</span> m</b>
+                </label>
+
+            </div>
+
+            <div style="margin-top:16px;background:#020617;border:1px solid #334155;border-radius:12px;padding:10px;">
+                <canvas id="projectileCanvas" width="900" height="430"
+                    style="width:100%;height:auto;display:block;border-radius:10px;"></canvas>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;">
+                <button type="button" onclick="startProjectileAdvanced()">▶ Start</button>
+                <button type="button" class="stop" onclick="stopProjectileAdvanced()">■ Stop</button>
+                <button type="button" class="reset" onclick="resetProjectileAdvanced()">↻ Reset</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:15px;">
+                <div class="value">Range <span id="projectileRange">0 m</span></div>
+                <div class="value">Max Height <span id="projectileMaxHeight">0 m</span></div>
+                <div class="value">Flight Time <span id="projectileFlightTime">0 s</span></div>
+                <div class="value">Time <span id="projectileTime">0 s</span></div>
+                <div class="value">Horizontal Speed <span id="projectileVx">0 m/s</span></div>
+                <div class="value">Vertical Speed <span id="projectileVy">0 m/s</span></div>
+                <div class="value">Current Speed <span id="projectileCurrentSpeed">0 m/s</span></div>
+                <div class="value">Current Height <span id="projectileCurrentHeight">0 m</span></div>
+            </div>
+
+            <div style="margin-top:16px;background:#111827;padding:14px;border-radius:12px;line-height:1.8;">
+                <b>📘 Physics</b><br>
+                Horizontal position: <b>x = v₀ cosθ × t</b><br>
+                Vertical position: <b>y = h₀ + v₀ sinθ × t − ½gt²</b><br>
+                Maximum height: <b>H = h₀ + (v₀²sin²θ)/(2g)</b>
+            </div>
+        </div>
+        `;
+
+        updateProjectileAdvanced();
+    }
+
+}
+  
+/* ================= ADVANCED PROJECTILE MOTION ================= */
+
+let projectileAnimation = null;
+let projectileRunning = false;
+let projectileStartTime = 0;
+let projectileElapsed = 0;
+
+function getProjectileValues(){
+    const v0 = parseFloat(document.getElementById("projectileSpeed")?.value || 25);
+    const angle = parseFloat(document.getElementById("projectileAngle")?.value || 45);
+    const g = parseFloat(document.getElementById("projectileGravity")?.value || 9.8);
+    const h0 = parseFloat(document.getElementById("projectileHeight")?.value || 0);
+    return {v0, angle, g, h0, rad: angle * Math.PI / 180};
+}
+
+function projectileFlightData(){
+    const {v0, rad, g, h0} = getProjectileValues();
+    const vy0 = v0 * Math.sin(rad);
+    const vx0 = v0 * Math.cos(rad);
+
+    const discriminant = vy0 * vy0 + 2 * g * h0;
+    const flightTime = (vy0 + Math.sqrt(discriminant)) / g;
+    const range = vx0 * flightTime;
+    const maxHeight = h0 + (vy0 * vy0) / (2 * g);
+
+    return {vx0, vy0, flightTime, range, maxHeight};
+}
+
+function updateProjectileAdvanced(){
+    const speed = document.getElementById("projectileSpeed");
+    if(!speed) return;
+
+    const {v0, angle, g, h0} = getProjectileValues();
+    const data = projectileFlightData();
+
+    document.getElementById("projectileSpeedValue").textContent = v0.toFixed(0);
+    document.getElementById("projectileAngleValue").textContent = angle.toFixed(0);
+    document.getElementById("projectileGravityValue").textContent = g.toFixed(1);
+    document.getElementById("projectileHeightValue").textContent = h0.toFixed(1);
+
+    document.getElementById("projectileRange").textContent = data.range.toFixed(2) + " m";
+    document.getElementById("projectileMaxHeight").textContent = data.maxHeight.toFixed(2) + " m";
+    document.getElementById("projectileFlightTime").textContent = data.flightTime.toFixed(2) + " s";
+
+    if(!projectileRunning) projectileElapsed = 0;
+    updateProjectileVisual(projectileElapsed);
+}
+
+function updateProjectileVisual(t){
+    const canvas = document.getElementById("projectileCanvas");
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const {v0, rad, g, h0} = getProjectileValues();
+    const data = projectileFlightData();
+
+    const tClamped = Math.max(0, Math.min(t, data.flightTime));
+    const x = v0 * Math.cos(rad) * tClamped;
+    const y = h0 + v0 * Math.sin(rad) * tClamped - 0.5 * g * tClamped * tClamped;
+    const vx = v0 * Math.cos(rad);
+    const vy = v0 * Math.sin(rad) - g * tClamped;
+    const currentSpeed = Math.sqrt(vx * vx + vy * vy);
+
+    const pad = 45;
+    const groundY = canvas.height - 42;
+    const maxX = Math.max(data.range, 1);
+    const maxY = Math.max(data.maxHeight, 1);
+    const sx = (canvas.width - pad * 2) / maxX;
+    const sy = (groundY - 30) / maxY;
+    const scale = Math.min(sx, sy);
+    const px = pad + x * scale;
+    const py = groundY - y * scale;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Sky / ground
+    ctx.fillStyle = "#07111f";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "#132238";
+    ctx.fillRect(0,groundY,canvas.width,canvas.height-groundY);
+
+    // Grid
+    ctx.strokeStyle = "rgba(148,163,184,.16)";
+    ctx.lineWidth = 1;
+    for(let gx=0; gx<=maxX; gx += Math.max(1, maxX/8)){
+        const xx = pad + gx * scale;
+        ctx.beginPath(); ctx.moveTo(xx,25); ctx.lineTo(xx,groundY); ctx.stroke();
+    }
+    for(let gy=0; gy<=maxY; gy += Math.max(1, maxY/6)){
+        const yy = groundY - gy * scale;
+        ctx.beginPath(); ctx.moveTo(pad,yy); ctx.lineTo(canvas.width-pad,yy); ctx.stroke();
+    }
+
+    // Ideal trajectory
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    const steps = 100;
+    for(let i=0;i<=steps;i++){
+        const tt = data.flightTime * i / steps;
+        const xx = v0 * Math.cos(rad) * tt;
+        const yy = Math.max(0, h0 + v0 * Math.sin(rad) * tt - 0.5*g*tt*tt);
+        const cx = pad + xx * scale;
+        const cy = groundY - yy * scale;
+        if(i===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy);
+    }
+    ctx.stroke();
+
+    // Velocity vector
+    const vectorScale = Math.max(2, 8 / Math.max(v0,1));
+    ctx.strokeStyle = "#f59e0b";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px,py);
+    ctx.lineTo(px + vx*vectorScale, py - vy*vectorScale);
+    ctx.stroke();
+
+    // Projectile
+    ctx.beginPath();
+    ctx.fillStyle = "#ef4444";
+    ctx.arc(px,py,9,0,Math.PI*2);
+    ctx.fill();
+
+    // Launch point
+    const launchY = groundY - h0 * scale;
+    ctx.fillStyle = "#22c55e";
+    ctx.beginPath(); ctx.arc(pad,launchY,6,0,Math.PI*2); ctx.fill();
+
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "14px Arial";
+    ctx.fillText("Launch", pad, Math.max(18,launchY-12));
+    ctx.fillText("Range: " + data.range.toFixed(2) + " m", Math.max(pad, canvas.width-190), groundY-12);
+
+    const timeEl = document.getElementById("projectileTime");
+    if(timeEl) timeEl.textContent = tClamped.toFixed(2) + " s";
+    document.getElementById("projectileVx").textContent = vx.toFixed(2) + " m/s";
+    document.getElementById("projectileVy").textContent = vy.toFixed(2) + " m/s";
+    document.getElementById("projectileCurrentSpeed").textContent = currentSpeed.toFixed(2) + " m/s";
+    document.getElementById("projectileCurrentHeight").textContent = Math.max(0,y).toFixed(2) + " m";
+}
+
+function startProjectileAdvanced(){
+    const canvas = document.getElementById("projectileCanvas");
+    if(!canvas || projectileRunning) return;
+
+    projectileRunning = true;
+    projectileStartTime = performance.now() - projectileElapsed * 1000;
+
+    function frame(now){
+        if(!projectileRunning) return;
+
+        projectileElapsed = (now - projectileStartTime) / 1000;
+        const data = projectileFlightData();
+
+        if(projectileElapsed >= data.flightTime){
+            projectileElapsed = data.flightTime;
+            updateProjectileVisual(projectileElapsed);
+            projectileRunning = false;
+            return;
+        }
+
+        updateProjectileVisual(projectileElapsed);
+        projectileAnimation = requestAnimationFrame(frame);
+    }
+
+    projectileAnimation = requestAnimationFrame(frame);
+}
+
+function stopProjectileAdvanced(){
+    projectileRunning = false;
+    if(projectileAnimation) cancelAnimationFrame(projectileAnimation);
+}
+
+function resetProjectileAdvanced(){
+    projectileRunning = false;
+    if(projectileAnimation) cancelAnimationFrame(projectileAnimation);
+    projectileElapsed = 0;
+    updateProjectileAdvanced();
+}
+
+let ohmAnimation;
+  let ohmRunning = false;
+  let ohmPosition = 8;
+
+  function updateAdvancedOhm(){
+
+      const vs = document.getElementById("advVoltage");
+      const rs = document.getElementById("advResistance");
+      if(!vs || !rs) return;
+
+      const V = Number(vs.value);
+      const R = Number(rs.value);
+      const I = V / R;
+      const P = V * I;
+
+      document.getElementById("advVoltageValue").innerText = V + " V";
+      document.getElementById("advResistanceValue").innerText = R + " Ω";
+      document.getElementById("advLiveVoltage").innerText = V + " V";
+      document.getElementById("advLiveResistance").innerText = R + " Ω";
+      document.getElementById("advLiveCurrent").innerText = I.toFixed(2) + " A";
+      document.getElementById("advLivePower").innerText = P.toFixed(2) + " W";
+
+      const battery = document.getElementById("advancedBatteryText");
+      if(battery) battery.innerText = V + "V";
+
+      const resistor = document.getElementById("advancedResistor");
+      if(resistor) resistor.innerText = R + "Ω";
+
+      const level = Math.min(100, (P / 96) * 100);
+
+      const bulb = document.getElementById("advancedBulb");
+      if(bulb){
+          bulb.style.filter = "brightness(" + (0.55 + level/55) + ")";
+          bulb.style.textShadow = "0 0 " + (5 + level/2) + "px rgba(250,204,21,.9)";
+      }
+
+      const heatBar = document.getElementById("ohmHeatBar");
+      const heatText = document.getElementById("ohmHeatText");
+      if(heatBar) heatBar.style.width = level.toFixed(0) + "%";
+      if(heatText) heatText.innerText = "Heat level: " + level.toFixed(0) + "%";
+
+      const brightness = document.getElementById("ohmBrightness");
+      if(brightness) brightness.innerText = level.toFixed(0) + "%";
+
+      drawOhmGraph(V, R);
+  }
+
+  function drawOhmGraph(currentV, R){
+
+      const canvas = document.getElementById("ohmGraph");
+      if(!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+      const L = 55, Rr = 18, T = 18, B = 42;
+      const gw = W - L - Rr;
+      const gh = H - T - B;
+      const maxV = 24;
+      const maxI = 24 / Math.max(1, R);
+
+      ctx.clearRect(0,0,W,H);
+
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 1;
+
+      for(let i=0;i<=6;i++){
+          const x = L + gw*i/6;
+          ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,H-B); ctx.stroke();
+      }
+
+      for(let i=0;i<=5;i++){
+          const y = T + gh*i/5;
+          ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-Rr,y); ctx.stroke();
+      }
+
+      ctx.strokeStyle = "#cbd5e1";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(L,T); ctx.lineTo(L,H-B); ctx.lineTo(W-Rr,H-B);
+      ctx.stroke();
+
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+
+      for(let v=0;v<=maxV;v+=0.5){
+          const I = v/R;
+          const x = L + (v/maxV)*gw;
+          const y = H-B - (I/maxI)*gh;
+          if(v===0) ctx.moveTo(x,y);
+          else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+
+      const px = L + (currentV/maxV)*gw;
+      const py = H-B - ((currentV/R)/maxI)*gh;
+
+      ctx.fillStyle = "#f59e0b";
+      ctx.beginPath();
+      ctx.arc(px,py,6,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "14px Arial";
+      ctx.fillText("Voltage (V)", W/2-35, H-12);
+
+      ctx.save();
+      ctx.translate(16,H/2+30);
+      ctx.rotate(-Math.PI/2);
+      ctx.fillText("Current (A)",0,0);
+      ctx.restore();
+  }
+
+  function startAdvancedOhm(){
+
+      const electron = document.getElementById("advancedElectron");
+      if(!electron || ohmRunning) return;
+
+      ohmRunning = true;
+      electron.style.display = "block";
+
+      function move(){
+
+          if(!ohmRunning) return;
+
+          const V = Number(document.getElementById("advVoltage").value);
+          const R = Number(document.getElementById("advResistance").value);
+          const I = V / R;
+
+          ohmPosition += Math.max(0.5, Math.min(4, I * 1.2));
+
+          if(ohmPosition > 90) ohmPosition = 8;
+
+          electron.style.left = ohmPosition + "%";
+          ohmAnimation = requestAnimationFrame(move);
+      }
+
+      move();
+  }
+
+  function stopAdvancedOhm(){
+
+      ohmRunning = false;
+
+      if(ohmAnimation){
+          cancelAnimationFrame(ohmAnimation);
+      }
+  }
+
+  function resetAdvancedOhm(){
+
+      stopAdvancedOhm();
+
+      const vs = document.getElementById("advVoltage");
+      const rs = document.getElementById("advResistance");
+
+      if(vs) vs.value = 12;
+      if(rs) rs.value = 6;
+
+      ohmPosition = 8;
+
+      const electron = document.getElementById("advancedElectron");
+      if(electron){
+          electron.style.display = "none";
+          electron.style.left = "8%";
+      }
+
+      updateAdvancedOhm();
+  }
+
+  let gravityAnimation;
+let gravityRunning = false;
+
+let gravityStartTime = 0;
+let gravityElapsed = 0;
+
+let gravityPosition = 25;
+
+const gravityValue = 9.8;
+
+
+function updateGravityObject(){
+
+    const object =
+        document.getElementById("gravityObject");
+
+    const select =
+        document.getElementById("gravityObjectSelect");
+
+    if(!object || !select) return;
+
+    const type = select.value;
+
+
+    if(type === "ball"){
+
+        object.innerText = "🟠";
+        object.style.background = "#f59e0b";
+
+    }
+
+    else if(type === "stone"){
+
+        object.innerText = "🪨";
+        object.style.background = "#64748b";
+
+    }
+
+    else if(type === "feather"){
+
+        object.innerText = "🪶";
+        object.style.background = "white";
+
+    }
+
+    else if(type === "box"){
+
+        object.innerText = "📦";
+        object.style.background = "#92400e";
+
+    }
+
+}
+
+
+function startGravity(){
+
+    const object =
+        document.getElementById("gravityObject");
+
+    if(!object || gravityRunning) return;
+
+
+    gravityRunning = true;
+
+    gravityStartTime = Date.now();
+
+    gravityAnimation = setInterval(function(){
+
+        gravityElapsed =
+            (Date.now() - gravityStartTime) / 1000;
+
+
+        const environment =
+            document.getElementById(
+                "gravityEnvironment"
+            ).value;
+
+
+        let effectiveGravity = gravityValue;
+
+
+        /*
+        Air resistance:
+        Feather falls much slower.
+        Other objects are only slightly affected.
+        */
+
+        if(environment === "air"){
+
+            const type =
+                document.getElementById(
+                    "gravityObjectSelect"
+                ).value;
+
+            if(type === "feather"){
+
+                effectiveGravity = 2.0;
+
+            }
+
+            else if(type === "box"){
+
+                effectiveGravity = 7.5;
+
+            }
+
+            else{
+
+                effectiveGravity = 9.0;
+
+            }
+
+        }
+
+
+        const speed =
+            effectiveGravity * gravityElapsed;
+
+
+        const distance =
+            0.5 *
+            effectiveGravity *
+            gravityElapsed *
+            gravityElapsed;
+
+
+        document.getElementById(
+            "gravityTime"
+        ).innerText =
+            gravityElapsed.toFixed(2) + " s";
+
+
+        document.getElementById(
+            "gravitySpeed"
+        ).innerText =
+            speed.toFixed(2) + " m/s";
+
+
+        document.getElementById(
+            "gravityDistance"
+        ).innerText =
+            distance.toFixed(2) + " m";
+
+
+        /*
+        Visual movement
+        */
+
+        gravityPosition +=
+            1.5 * (effectiveGravity / 9.8);
+
+
+        object.style.top =
+            gravityPosition + "px";
+
+
+        if(gravityPosition >= 280){
+
+            stopGravity();
+
+        }
+
+    },30);
+
+}
+
+
+function stopGravity(){
+
+    gravityRunning = false;
+
+    clearInterval(gravityAnimation);
+
+}
+
+
+function resetGravity(){
+
+    gravityRunning = false;
+
+    clearInterval(gravityAnimation);
+
+    gravityElapsed = 0;
+
+    gravityPosition = 25;
+
+
+    const object =
+        document.getElementById("gravityObject");
+
+
+    if(object){
+
+        object.style.top = "25px";
+
+    }
+
+
+    const time =
+        document.getElementById("gravityTime");
+
+    const speed =
+        document.getElementById("gravitySpeed");
+
+    const distance =
+        document.getElementById("gravityDistance");
+
+
+    if(time){
+
+        time.innerText = "0.00 s";
+
+    }
+
+
+    if(speed){
+
+        speed.innerText = "0.00 m/s";
+
+    }
+
+
+    if(distance){
+
+        distance.innerText = "0.00 m";
+
+    }
+
+
+    updateGravityObject();
+
+}
+
+  let pendulumAnimation;
+let pendulumRunning = false;
+
+let pendulumAngle = 25;
+let pendulumDirection = 1;
+
+let pendulumUserSpeed = 1;
+
+
+function updatePendulum(){
+
+    const lengthSlider =
+        document.getElementById("pendulumLength");
+
+    const massSlider =
+        document.getElementById("pendulumMass");
+
+    if(!lengthSlider || !massSlider) return;
+
+    const L = parseFloat(lengthSlider.value);
+    const M = parseFloat(massSlider.value);
+
+    const g = 9.8;
+
+    const T =
+        2 * Math.PI * Math.sqrt(L / g);
+
+    const f = 1 / T;
+
+    document.getElementById("pendulumLengthValue").innerText =
+        L.toFixed(2) + " m";
+
+    document.getElementById("pendulumMassValue").innerText =
+        M.toFixed(2) + " kg";
+
+    document.getElementById("pendulumLengthDisplay").innerText =
+        L.toFixed(2) + " m";
+
+    document.getElementById("pendulumMassDisplay").innerText =
+        M.toFixed(2) + " kg";
+
+    document.getElementById("pendulumPeriod").innerText =
+        T.toFixed(2) + " s";
+
+    document.getElementById("pendulumFrequency").innerText =
+        f.toFixed(2) + " Hz";
+
+
+    const arm =
+        document.getElementById("pendulumArm");
+
+    const bob =
+        document.getElementById("pendulumBob");
+
+    if(!arm || !bob) return;
+
+
+    const visualLength =
+        100 + ((L - 0.5) / 2) * 190;
+
+    arm.style.height =
+        visualLength + "px";
+
+    updateBobPosition();
+}
+
+
+function updatePendulumSpeed(){
+
+    const slider =
+        document.getElementById("pendulumSpeed");
+
+    if(!slider) return;
+
+    pendulumUserSpeed =
+        parseFloat(slider.value);
+
+    const display =
+        document.getElementById("pendulumSpeedValue");
+
+    if(display){
+        display.innerText =
+            pendulumUserSpeed.toFixed(1) + "×";
+    }
+}
+
+
+function updateBobPosition(){
+
+    const arm =
+        document.getElementById("pendulumArm");
+
+    const bob =
+        document.getElementById("pendulumBob");
+
+    const lengthSlider =
+        document.getElementById("pendulumLength");
+
+    if(!arm || !bob || !lengthSlider) return;
+
+    const L =
+        parseFloat(lengthSlider.value);
+
+    const visualLength =
+        100 + ((L - 0.5) / 2) * 190;
+
+    const angleRad =
+        pendulumAngle * Math.PI / 180;
+
+    const x =
+        Math.sin(angleRad) * visualLength;
+
+    const y =
+        Math.cos(angleRad) * visualLength;
+
+    bob.style.left =
+        "calc(50% + " + x + "px)";
+
+    bob.style.top =
+        (34 + y - 25) + "px";
+}
+
+
+function startPendulum(){
+
+    if(pendulumRunning) return;
+
+    const arm =
+        document.getElementById("pendulumArm");
+
+    const bob =
+        document.getElementById("pendulumBob");
+
+    const lengthSlider =
+        document.getElementById("pendulumLength");
+
+    if(!arm || !bob || !lengthSlider) return;
+
+    pendulumRunning = true;
+
+
+    function animate(){
+
+        if(!pendulumRunning) return;
+
+        const L =
+            parseFloat(lengthSlider.value);
+
+        const g = 9.8;
+
+        const T =
+            2 * Math.PI * Math.sqrt(L / g);
+
+        /*
+          Longer pendulum = slower natural oscillation.
+          User speed slider controls the visible simulation speed.
+        */
+
+        const step =
+            (360 / (T * 60)) *
+            pendulumUserSpeed;
+
+        pendulumAngle +=
+            pendulumDirection * step;
+
+        if(pendulumAngle >= 25){
+
+            pendulumAngle = 25;
+            pendulumDirection = -1;
+        }
+
+        if(pendulumAngle <= -25){
+
+            pendulumAngle = -25;
+            pendulumDirection = 1;
+        }
+
+
+        arm.style.transform =
+            "translateX(-50%) rotate(" +
+            pendulumAngle +
+            "deg)";
+
+        updateBobPosition();
+
+        pendulumAnimation =
+            requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+
+function stopPendulum(){
+
+    pendulumRunning = false;
+
+    if(pendulumAnimation){
+        cancelAnimationFrame(
+            pendulumAnimation
+        );
+    }
+}
+
+
+function resetPendulum(){
+
+    stopPendulum();
+
+    pendulumAngle = 25;
+    pendulumDirection = 1;
+
+    const lengthSlider =
+        document.getElementById("pendulumLength");
+
+    const massSlider =
+        document.getElementById("pendulumMass");
+
+    const speedSlider =
+        document.getElementById("pendulumSpeed");
+
+    if(lengthSlider)
+        lengthSlider.value = 1;
+
+    if(massSlider)
+        massSlider.value = 1;
+
+    if(speedSlider)
+        speedSlider.value = 1;
+
+    pendulumUserSpeed = 1;
+
+    const speedDisplay =
+        document.getElementById("pendulumSpeedValue");
+
+    if(speedDisplay)
+        speedDisplay.innerText = "1.0×";
+
+    const arm =
+        document.getElementById("pendulumArm");
+
+    if(arm){
+
+        arm.style.transform =
+            "translateX(-50%) rotate(25deg)";
+    }
+
+    updatePendulum();
+}
+let lensAnimation = null;
+let lensRunning = false;
+
+function updateLensAdvanced(){
+
+    const f = parseFloat(document.getElementById("lensF").value);
+    const uInput = parseFloat(document.getElementById("lensU").value);
+    const h = parseFloat(document.getElementById("lensH").value);
+
+    // Cartesian sign convention
+    const u = -uInput;
+
+    let v = (f * u) / (u + f);
+
+    let m = v / u;
+
+    let imageHeight = m * h;
+
+    document.getElementById("lensFValue").innerText =
+        f.toFixed(0) + " cm";
+
+    document.getElementById("lensUValue").innerText =
+        uInput.toFixed(0) + " cm";
+
+    document.getElementById("lensHValue").innerText =
+        h.toFixed(1) + " cm";
+
+    document.getElementById("lensV").innerText =
+        Math.abs(v).toFixed(2) + " cm";
+
+    document.getElementById("lensM").innerText =
+        m.toFixed(2) + "×";
+
+    document.getElementById("lensImageHeight").innerText =
+        Math.abs(imageHeight).toFixed(2) + " cm";
+
+    document.getElementById("lensType").innerText =
+        v > 0 ? "Real" : "Virtual";
+
+    document.getElementById("lensOrientation").innerText =
+        m < 0 ? "Inverted" : "Upright";
+
+    updateLensVisual(f, uInput, v, m, h);
+}
+
+
+function updateLensVisual(f, uInput, v, m, h){
+
+    const object = document.getElementById("lensObject");
+    const image = document.getElementById("lensImage");
+
+    if(!object || !image) return;
+
+    // Object position
+    const objectPercent =
+        Math.max(8, Math.min(42, 50 - uInput * 0.55));
+
+    object.style.left = objectPercent + "%";
+
+    // Scale object height
+    object.style.height =
+        Math.max(25, Math.min(140, h * 10)) + "px";
+
+    object.style.top =
+        (195 - Math.max(25, Math.min(140, h * 10))) + "px";
+
+    // Image position
+    let imagePercent;
+
+    if(v > 0){
+        imagePercent =
+            Math.min(92, 50 + Math.abs(v) * 0.55);
+    }else{
+        imagePercent =
+            Math.max(8, 50 - Math.abs(v) * 0.55);
+    }
+
+    image.style.left = imagePercent + "%";
+
+    // Image size
+    const imagePixelHeight =
+        Math.max(25, Math.min(160, Math.abs(m * h) * 10));
+
+    image.style.height = imagePixelHeight + "px";
+
+    if(m < 0){
+        // inverted
+        image.style.top = "195px";
+        image.style.transform = "scaleY(1)";
+    }else{
+        // upright
+        image.style.top =
+            (195 - imagePixelHeight) + "px";
+        image.style.transform = "scaleY(1)";
+    }
+}
+
+
+function startLensAdvanced(){
+
+    if(lensRunning) return;
+
+    lensRunning = true;
+
+    const lens = document.getElementById("lensGlass");
+
+    function animate(){
+
+        if(!lensRunning) return;
+
+        lens.style.boxShadow =
+            "0 0 " + (18 + Math.sin(Date.now()/150)*5) +
+            "px rgba(96,165,250,.7)";
+
+        lensAnimation =
+            requestAnimationFrame(animate);
+    }
+
+    lensAnimation =
+        requestAnimationFrame(animate);
+}
+
+
+function stopLensAdvanced(){
+
+    lensRunning = false;
+
+    if(lensAnimation){
+        cancelAnimationFrame(lensAnimation);
+        lensAnimation = null;
+    }
+
+    const lens = document.getElementById("lensGlass");
+
+    if(lens){
+        lens.style.boxShadow =
+            "0 0 18px rgba(96,165,250,.6)";
+    }
+}
+
+
+function resetLensAdvanced(){
+
+    stopLensAdvanced();
+
+    document.getElementById("lensF").value = 10;
+    document.getElementById("lensU").value = 20;
+    document.getElementById("lensH").value = 5;
+
+    updateLensAdvanced();
+}
+  
+
+/* ================= ADVANCED ELECTROMAGNETIC INDUCTION LAB ================= */
+let emTimer = null;
+let emPosition = -1.25;
+let emDirection = 1;
+let emLastTime = 0;
+let emHistory = [];
+
+function emReadValues(){
+  return {
+    speed: parseFloat(document.getElementById("emSpeed")?.value || 2),
+    turns: parseFloat(document.getElementById("emTurns")?.value || 400),
+    field: parseFloat(document.getElementById("emField")?.value || 0.8),
+    resistance: parseFloat(document.getElementById("emResistance")?.value || 10)
+  };
+}
+function updateEMLab(){
+  const c=document.getElementById("emCanvas"); if(!c) return;
+  const v=emReadValues();
+  document.getElementById("emSpeedValue").textContent=v.speed.toFixed(1);
+  document.getElementById("emTurnsValue").textContent=v.turns.toFixed(0);
+  document.getElementById("emFieldValue").textContent=v.field.toFixed(1);
+  document.getElementById("emResistanceValue").textContent=v.resistance.toFixed(0);
+  // Simplified teaching model: flux profile varies smoothly as the magnet passes the coil.
+  const x=emPosition;
+  const fluxPerTurn=v.field*0.001*Math.exp(-Math.pow(x/0.72,2));
+  const dFluxDt=fluxPerTurn*(-2*x/(0.72*0.72))*v.speed*emDirection;
+  const emf=-v.turns*dFluxDt;
+  const current=emf/v.resistance;
+  document.getElementById("emFlux").textContent=fluxPerTurn.toFixed(5)+" Wb/turn";
+  document.getElementById("emEmf").textContent=emf.toFixed(3)+" V";
+  document.getElementById("emCurrent").textContent=current.toFixed(3)+" A";
+  document.getElementById("emPolarity").textContent=Math.abs(emf)<0.005?"Near zero":(emf>0?"Positive (+)":"Negative (−)");
+  emDrawScene(c, x, emf, current);
+  emDrawGraph();
+}
+function emDrawScene(canvas,x,emf,current){
+  const ctx=canvas.getContext("2d"), w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h); ctx.fillStyle="#07101f";ctx.fillRect(0,0,w,h);
+  // Coil and core
+  const cx=w*0.53, cy=h*0.49;
+  ctx.strokeStyle="#94a3b8";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(cx-70,cy);ctx.lineTo(cx+70,cy);ctx.stroke();
+  for(let i=0;i<11;i++){ctx.beginPath();ctx.strokeStyle=i%2?"#f59e0b":"#fbbf24";ctx.lineWidth=5;ctx.ellipse(cx-52+i*10,cy,8,48,0,0,Math.PI*2);ctx.stroke();}
+  ctx.fillStyle="#cbd5e1";ctx.font="bold 17px Arial";ctx.textAlign="center";ctx.fillText("COIL",cx,cy+78);
+  // Magnet moves along axis.
+  const mx=cx+x*250; const my=cy-24;
+  ctx.fillStyle="#ef4444";ctx.fillRect(mx-52,my,52,48);ctx.fillStyle="#f8fafc";ctx.fillRect(mx,my,52,48);
+  ctx.fillStyle="#fff";ctx.font="bold 19px Arial";ctx.fillText("N",mx-26,my+30);ctx.fillStyle="#0f172a";ctx.fillText("S",mx+26,my+30);
+  ctx.fillStyle="#e2e8f0";ctx.font="14px Arial";ctx.fillText("BAR MAGNET",mx,my-10);
+  // Connecting leads and galvanometer
+  ctx.strokeStyle="#64748b";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(cx+72,cy);ctx.lineTo(cx+112,cy);ctx.lineTo(cx+112,cy+94);ctx.lineTo(cx+175,cy+94);ctx.moveTo(cx-72,cy);ctx.lineTo(cx-112,cy);ctx.lineTo(cx-112,cy+94);ctx.lineTo(cx-175,cy+94);ctx.stroke();
+  const gx=cx, gy=cy+94;ctx.fillStyle="#0f172a";ctx.strokeStyle="#60a5fa";ctx.lineWidth=3;ctx.beginPath();ctx.arc(gx,gy,38,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.strokeStyle="#e2e8f0";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx+Math.max(-23,Math.min(23,emf*9)),gy-20);ctx.stroke();ctx.fillStyle="#e2e8f0";ctx.font="13px Arial";ctx.fillText("GALVANOMETER",gx,gy+57);
+  ctx.fillStyle="#93c5fd";ctx.font="15px Arial";ctx.textAlign="left";ctx.fillText("Magnet direction: "+(emDirection>0?"→":"←"),18,28);ctx.fillText("Relative current: "+current.toFixed(3)+" A",18,51);
+}
+function emDrawGraph(){
+  const c=document.getElementById("emGraph");if(!c)return;
+  const ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.fillStyle="#07101f";ctx.fillRect(0,0,w,h);
+  const pad=36, mid=h/2;ctx.strokeStyle="#475569";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad,18);ctx.lineTo(pad,h-24);ctx.lineTo(w-12,h-24);ctx.moveTo(pad,mid);ctx.lineTo(w-12,mid);ctx.stroke();
+  ctx.fillStyle="#cbd5e1";ctx.font="13px Arial";ctx.fillText("EMF (V)",8,15);ctx.fillText("time →",w-68,h-7);
+  if(emHistory.length<2)return;const max=Math.max(0.1,...emHistory.map(p=>Math.abs(p.y)));ctx.strokeStyle="#38bdf8";ctx.lineWidth=2.5;ctx.beginPath();
+  emHistory.forEach((p,i)=>{const px=pad+i*(w-pad-14)/(Math.max(1,emHistory.length-1));const py=mid-(p.y/max)*(h/2-35);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});ctx.stroke();
+}
+function emTick(){
+  if(!document.getElementById("emCanvas")){stopEMLab();return;}
+  const v=emReadValues();emPosition+=0.018*v.speed*emDirection;
+  if(emPosition>1.35||emPosition< -1.35){emDirection*=-1;emPosition=Math.max(-1.35,Math.min(1.35,emPosition));}
+  const flux=v.field*0.001*Math.exp(-Math.pow(emPosition/0.72,2));
+  const emf=-v.turns*(flux*(-2*emPosition/(0.72*0.72))*v.speed*emDirection);
+  emHistory.push({x:Date.now(),y:emf});if(emHistory.length>150)emHistory.shift();
+  updateEMLab();
+}
+function startEMLab(){if(emTimer)return;emTimer=setInterval(emTick,70);}
+function stopEMLab(){if(emTimer){clearInterval(emTimer);emTimer=null;}}
+function reverseEMLab(){emDirection*=-1;updateEMLab();}
+function resetEMLab(){
+  stopEMLab();const speed=document.getElementById("emSpeed");if(!speed)return;
+  speed.value=2;document.getElementById("emTurns").value=400;document.getElementById("emField").value=0.8;document.getElementById("emResistance").value=10;
+  emPosition=-1.25;emDirection=1;emHistory=[];updateEMLab();
+}
+
+let spMode = "series";
+function setSeriesParallelMode(mode){spMode=mode;updateSeriesParallelLab();}
+function resetSeriesParallelLab(){
+  const defaults={spVoltage:12,spR1:100,spR2:220,spR3:330};
+  Object.entries(defaults).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
+  ["spBranch1","spBranch2","spBranch3"].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});
+  spMode="series";updateSeriesParallelLab();
+}
+function updateSeriesParallelLab(){
+  const get=id=>document.getElementById(id);
+  const ids=["spVoltage","spR1","spR2","spR3"];
+  if(ids.some(id=>!get(id)))return;
+  const V=Number(get("spVoltage").value), Rs=[1,2,3].map(i=>Number(get("spR"+i).value));
+  const closed=[1,2,3].map(i=>!!get("spBranch"+i)?.checked);
+  ["spVoltageValue"].forEach(id=>{if(get(id))get(id).textContent=V.toFixed(0);});
+  Rs.forEach((r,i)=>{if(get("spR"+(i+1)+"Value"))get("spR"+(i+1)+"Value").textContent=r.toFixed(0);});
+  const active=Rs.map((r,i)=>closed[i]?r:null); let req=Infinity, It=0, volts=[0,0,0], currents=[0,0,0], powers=[0,0,0];
+  if(spMode==="series"){
+    if(closed.every(Boolean)){req=Rs.reduce((a,b)=>a+b,0);It=V/req;volts=Rs.map(r=>It*r);currents=Rs.map((r,i)=>closed[i]?It:0);powers=Rs.map((r,i)=>closed[i]?currents[i]*currents[i]*r:0);}
+    else {req=Infinity;It=0;}
+  } else {
+    const conductance=Rs.reduce((sum,r,i)=>sum+(closed[i]?1/r:0),0);
+    req=conductance>0?1/conductance:Infinity;It=Number.isFinite(req)?V/req:0;
+    currents=Rs.map((r,i)=>closed[i]?V/r:0);volts=Rs.map((r,i)=>closed[i]?V:0);powers=Rs.map((r,i)=>closed[i]?volts[i]*currents[i]:0);
+  }
+  const fmtR=x=>Number.isFinite(x)?x.toFixed(2)+" Ω":"Open circuit";
+  const fmtI=x=>(x*1000).toFixed(2)+" mA";
+  const fmtP=x=>x.toFixed(3)+" W";
+  const totalPower=powers.reduce((a,b)=>a+b,0);
+  const values={spModeReadout:spMode==="series"?"Series":"Parallel",spSvgMode:spMode==="series"?"Series mode":"Parallel mode",spReq:fmtR(req),spItotal:fmtI(It),spPtotal:fmtP(totalPower),spVtotal:V.toFixed(2)+" V",spActive:closed.filter(Boolean).length+" / 3"};
+  Object.entries(values).forEach(([id,val])=>{if(get(id))get(id).textContent=val;});
+  if(get("spStatus"))get("spStatus").textContent=spMode==="series"?(closed.every(Boolean)?"One continuous path: current is equal through all three resistors.":"Series path is open: source current is zero because at least one component is disconnected."):(closed.some(Boolean)?"Parallel branches are independent: each closed branch has the source voltage.":"All parallel branches are open: no current flows.");
+  Rs.forEach((r,i)=>{if(get("spSvgR"+(i+1)))get("spSvgR"+(i+1)).textContent="R"+(i+1)+" "+r+"Ω";});
+  const tbody=get("spMeasurements");
+  if(tbody)tbody.innerHTML=Rs.map((r,i)=>`<tr style="opacity:${closed[i]?1:.55}"><td style="padding:10px;border-bottom:1px solid #334155">R${i+1} ${closed[i]?"(closed)":"(open)"}</td><td style="padding:10px;border-bottom:1px solid #334155">${r} Ω</td><td style="padding:10px;border-bottom:1px solid #334155">${volts[i].toFixed(3)} V</td><td style="padding:10px;border-bottom:1px solid #334155">${fmtI(currents[i])}</td><td style="padding:10px;border-bottom:1px solid #334155">${fmtP(powers[i])}</td></tr>`).join("");
+  const sbtn=get("spSeriesBtn"),pbtn=get("spParallelBtn");
+  if(sbtn)sbtn.style.outline=spMode==="series"?"2px solid #38bdf8":"none";
+  if(pbtn)pbtn.style.outline=spMode==="parallel"?"2px solid #38bdf8":"none";
+  const svg=get("spCircuitSvg");if(svg){const labels=svg.querySelectorAll("rect");/* visual styling is informational; values and table are authoritative */}
+}
+
+/* ================= ADVANCED PLANETARY MOTION SIMULATOR ================= */
+const planetaryBodies=[
+ {name:'Mercury',a:.387,mass:3.301e23,color:'#a8a29e',radius:4,period:.2408,speed:47.36},
+ {name:'Venus',a:.723,mass:4.867e24,color:'#fbbf24',radius:6,period:.6152,speed:35.02},
+ {name:'Earth',a:1,mass:5.972e24,color:'#38bdf8',radius:6,period:1,speed:29.78},
+ {name:'Mars',a:1.524,mass:6.417e23,color:'#fb7185',radius:5,period:1.8808,speed:24.07},
+ {name:'Jupiter',a:5.203,mass:1.898e27,color:'#fdba74',radius:10,period:11.862,speed:13.07},
+ {name:'Saturn',a:9.537,mass:5.683e26,color:'#fde68a',radius:9,period:29.457,speed:9.69},
+ {name:'Uranus',a:19.191,mass:8.681e25,color:'#67e8f9',radius:7,period:84.016,speed:6.80},
+ {name:'Neptune',a:30.07,mass:1.024e26,color:'#818cf8',radius:7,period:164.8,speed:5.43}
+];
+let plAnim=null,plRunning=false,plAngle=0,plLast=0,plYears=0,plTrails=true,plTrailPoints=[];
+function initPlanetaryLab(){plAngle=0;plYears=0;plTrailPoints=[];plRunning=false;if(plAnim){cancelAnimationFrame(plAnim);plAnim=null;}updatePlanetaryLab();drawPlanetaryLab();}
+function updatePlanetaryLab(){
+ const get=id=>document.getElementById(id); if(!get('planetaryCanvas'))return;
+ const idx=Number(get('plPlanet').value),b=planetaryBodies[idx],mass=Number(get('plMass').value),speed=Number(get('plSpeed').value),zoom=Number(get('plZoom').value);
+ get('plMassVal').textContent=mass.toFixed(2);get('plSpeedVal').textContent=speed.toFixed(1);get('plZoomVal').textContent=zoom.toFixed(1);
+ const period=b.period/Math.sqrt(mass),vel=b.speed*Math.sqrt(mass),r=b.a,acc=0.00593*mass/(r*r),force=6.67430e-11*(1.98847e30*mass)*b.mass/Math.pow(r*1.495978707e11,2);
+ get('plDistance').textContent=r.toFixed(3)+' AU';get('plPeriod').textContent=period.toFixed(3)+' years';get('plVelocity').textContent=vel.toFixed(2)+' km/s';get('plAccel').textContent=acc.toExponential(3)+' m/s²';get('plForce').textContent=force.toExponential(3)+' N';get('plTime').textContent=plYears.toFixed(2)+' years';drawPlanetaryLab();
+}
+function drawPlanetaryLab(){
+ const c=document.getElementById('planetaryCanvas');if(!c)return;const ctx=c.getContext('2d'),w=c.width,h=c.height,cx=w/2,cy=h/2;ctx.clearRect(0,0,w,h);
+ const bg=ctx.createRadialGradient(cx,cy,10,cx,cy,w*.7);bg.addColorStop(0,'#0b1b3a');bg.addColorStop(1,'#020617');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+ // deterministic stars
+ for(let i=0;i<90;i++){let x=(i*127.7+31)%w,y=(i*73.3+19)%h;ctx.fillStyle=`rgba(226,232,240,${.18+(i%5)*.12})`;ctx.fillRect(x,y,1.5,1.5)}
+ const mass=Number(document.getElementById('plMass')?.value||1),zoom=Number(document.getElementById('plZoom')?.value||1),maxAU=30.1,scale=(Math.min(w,h)*.43/maxAU)*zoom;
+ // orbit paths are drawn in logarithmically compressed visual space to keep outer planets visible
+ const orbitR=b=>24+Math.pow(b.a,0.57)*scale*3.1;
+ planetaryBodies.forEach((b,i)=>{ctx.beginPath();ctx.ellipse(cx,cy,orbitR(b),orbitR(b)*.72,0,0,Math.PI*2);ctx.strokeStyle=i===Number(document.getElementById('plPlanet')?.value)?'rgba(125,211,252,.7)':'rgba(148,163,184,.23)';ctx.lineWidth= i===Number(document.getElementById('plPlanet')?.value)?2:1;ctx.stroke()});
+ const sun=ctx.createRadialGradient(cx,cy,2,cx,cy,25);sun.addColorStop(0,'#fff7ae');sun.addColorStop(.35,'#facc15');sun.addColorStop(1,'rgba(249,115,22,0)');ctx.fillStyle=sun;ctx.beginPath();ctx.arc(cx,cy,25,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fde68a';ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f8fafc';ctx.font='14px sans-serif';ctx.fillText('SUN',cx+14,cy-13);
+ planetaryBodies.forEach((b,i)=>{const a=plAngle/(b.period/Math.sqrt(mass))*(i===Number(document.getElementById('plPlanet')?.value)?1:1)+i*.61;const rr=orbitR(b),x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr*.72;if(plTrails&&i===Number(document.getElementById('plPlanet')?.value)){plTrailPoints.push({x,y});if(plTrailPoints.length>180)plTrailPoints.shift();}if(plTrails&&i===Number(document.getElementById('plPlanet')?.value)&&plTrailPoints.length>1){ctx.beginPath();plTrailPoints.forEach((p,j)=>j?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='rgba(56,189,248,.8)';ctx.lineWidth=2;ctx.stroke()}ctx.beginPath();ctx.fillStyle=b.color;ctx.arc(x,y,b.radius+(i===Number(document.getElementById('plPlanet')?.value)?2:0),0,Math.PI*2);ctx.fill();if(b.name==='Saturn'){ctx.beginPath();ctx.ellipse(x,y,14,5,.3,0,Math.PI*2);ctx.strokeStyle='#fde68a';ctx.lineWidth=2;ctx.stroke()}ctx.fillStyle='#e2e8f0';ctx.font='12px sans-serif';ctx.fillText(b.name,x+10,y-8);});
+ ctx.fillStyle='#cbd5e1';ctx.font='12px sans-serif';ctx.fillText('Illustrative orbit spacing • not to scale',14,h-14);
+}
+function startPlanetaryLab(){if(plRunning||!document.getElementById('planetaryCanvas'))return;plRunning=true;plLast=performance.now();function frame(now){if(!plRunning)return;const dt=Math.min((now-plLast)/1000,.05);plLast=now;const speed=Number(document.getElementById('plSpeed')?.value||1);plAngle+=dt*speed*.65;plYears+=dt*speed*.02;const t=document.getElementById('plTime');if(t)t.textContent=plYears.toFixed(2)+' years';drawPlanetaryLab();plAnim=requestAnimationFrame(frame)}plAnim=requestAnimationFrame(frame)}
+function pausePlanetaryLab(){plRunning=false;if(plAnim)cancelAnimationFrame(plAnim);plAnim=null}
+function resetPlanetaryLab(){pausePlanetaryLab();plAngle=0;plYears=0;plTrailPoints=[];updatePlanetaryLab()}
+function togglePlanetaryTrails(){plTrails=!plTrails;plTrailPoints=[];const b=document.getElementById('plTrailBtn');if(b)b.textContent='✨ Trails: '+(plTrails?'On':'Off');drawPlanetaryLab()}
+
+// Dashboard button helper: open the selected experiment and bring the result into view.
+function openDashboardExperiment(type){
+    if(typeof showExperiment === "function"){
+        showExperiment(type);
+        const box = document.getElementById("experimentInfo");
+        if(box){ box.scrollIntoView({behavior:"smooth", block:"start"}); }
+    }
+}
+
+
+/* ================== SITE NAVIGATION / LEARNING / QUIZ ================== */
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function filterLearnTopics(){
+  const q=(document.getElementById("topicSearch")?.value||"").toLowerCase().trim();
+  document.querySelectorAll("#learnGrid .learn-card").forEach(card=>{
+    card.style.display=(!q || card.dataset.topic.includes(q)) ? "" : "none";
+  });
+}
+function quizAnswer(button,correct){
+  const card=button.closest(".quiz-card");
+  if(!card) return;
+  const result=card.querySelector(".quiz-result");
+  card.querySelectorAll(".quiz-option").forEach(b=>b.disabled=true);
+  result.textContent=correct ? "✅ Correct! Great job." : "❌ Not quite. Try the experiment and review the Learn section.";
+}
+
+</script>
+
+<button class="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+    <section class="card" id="aboutSite">
+    <h2>⚡ About Physics With Omii</h2>
+
+    <p>
+        Physics With Omii is an interactive learning website
+        designed to make physics easier to understand through
+        simulations, experiments and visual learning.
+    </p>
+
+    <p>
+        Explore concepts, interact with experiments and learn
+        physics in a simple and practical way.
+    </p>
+
+    <p>
+        🚀 Learn • 🔬 Explore • ⚡ Experiment
+    </p>
+</section>
+    <footer class="site-footer">
+    <h3>⚡ Physics With Omii</h3>
+    <p>Learn • Explore • Experiment</p>
+    <p>© 2026 Physics With Omii. All Rights Reserved.</p>
+</footer>
+    <section class="card creator-section">
+    <h2>👨‍💻 Created by Omii</h2>
+
+    <p>
+        Physics With Omii is created to make learning physics
+        simple, interactive and practical.
+    </p>
+
+    <p>
+        ⚡ Built with curiosity, creativity and a passion for physics.
+    </p>
+</section>
+    <section class="card" id="contactSite">
+    <h2>📩 Contact & Feedback</h2>
+
+    <p>
+        Have a suggestion, feedback or a new physics experiment idea?
+        I'd love to hear from you!
+    </p>
+
+    <p>
+        🚀 Keep Learning • Keep Exploring • Keep Experimenting
+    </p>
+</section>
+</body>
+</html>
